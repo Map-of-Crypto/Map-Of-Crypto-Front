@@ -1,44 +1,49 @@
 import React from 'react';
-import Icon1 from '../../images/giveHelp.svg';
-import Icon2 from '../../images/findHelp.svg';
-import Icon3 from '../../images/support.svg';
+import { GiMagnifyingGlass, GiReceiveMoney } from "react-icons/gi";
+import { FaHandshake } from "react-icons/fa";
+
 import {
   ServicesContainer,
   ServicesH1,
   ServicesWrapper,
   ServicesCard,
-  ServicesIcon,
   ServicesH2,
   ServicesP,
-} from './ServicesElements';
+} from "./ServicesElements";
 
 const Services = () => {
   return (
-    <ServicesContainer id='services'>
-      <ServicesH1>Become a</ServicesH1>
+    <ServicesContainer id="services">
+      <ServicesH1>How it Works</ServicesH1>
       <ServicesWrapper>
         <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Volunteer</ServicesH2>
+          <div style={{ fontSize: "80px", padding: "10px" }}>
+            <GiMagnifyingGlass />
+          </div>
+          <ServicesH2>List or Find</ServicesH2>
           <ServicesP>
-            Become a volunteer and help nearby Help-Seekers around you, gaining
-            tokens and money.
+            Look for the item you want to buy, or list the item you want to
+            sell.
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
-          <ServicesIcon src={Icon2} />
-          <ServicesH2>Help-Seeker</ServicesH2>
+          <div style={{ fontSize: "80px", padding: "10px" }}>
+            <FaHandshake />
+          </div>
+          <ServicesH2>Agreement</ServicesH2>
           <ServicesP>
-            Become a Help-Seeker and receive any kind of help from awaiting
-            volunteers.
+            Agree on a price for the given item, and deposit the price in our
+            contract so that the money stays between the buyer and seller.
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
-          <ServicesIcon src={Icon3} />
-          <ServicesH2>Supporter</ServicesH2>
+          <div style={{ fontSize: "80px", padding: "10px" }}>
+            <GiReceiveMoney />
+          </div>
+          <ServicesH2>Receive</ServicesH2>
           <ServicesP>
-            Become a Supporter and help our cause by providing funding to
-            volunteers and charities.
+            Once the buyer gets the cargo with the item, our contract is
+            notified via Oracles and seller can withdraw the money.
           </ServicesP>
         </ServicesCard>
       </ServicesWrapper>

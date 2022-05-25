@@ -14,6 +14,7 @@ import {
   NavBtn,
   MetaMaskbtn,
 } from './NavbarElements';
+import Logo from "../../images/moc1.png";
 
 const Navbar = ({ toggle, connect, address }) => {
   const [scrollNav, setScrollNav] = useState(false);
@@ -40,10 +41,7 @@ const Navbar = ({ toggle, connect, address }) => {
         <Nav scrollNav={scrollNav}>
           <NavbarContainer>
             <NavLogo onClick={toggleHome} to="/">
-              <Img
-                src={require("../../images/logo-text-white.png")}
-                alt="Logo"
-              />
+              <Img src={Logo} alt="Logo" style={{ filter: "invert(1)" }} />
             </NavLogo>
             <MobileIcon onClick={toggle}>
               <FaBars />
@@ -58,7 +56,7 @@ const Navbar = ({ toggle, connect, address }) => {
                   exact="true"
                   offset={-80}
                 >
-                  About
+                  Sell
                 </NavLinks>
               </NavItem>
               <NavItem>
@@ -70,7 +68,7 @@ const Navbar = ({ toggle, connect, address }) => {
                   exact="true"
                   offset={-80}
                 >
-                  Discover
+                  Buy
                 </NavLinks>
               </NavItem>
               <NavItem>

@@ -13,8 +13,7 @@ import {
   Subtitle,
   TextWrapper,
   TopLine,
-} from '../InfoSection/InfoElements';
-import { WorldIDComponent } from '../WorldIDComponent/WorldIDComponent';
+} from "../InfoSection/InfoElements";
 
 const StepExampleGroup = ({
   topLine,
@@ -24,10 +23,7 @@ const StepExampleGroup = ({
   alt,
   connect,
   address,
-  mintNFT,
 }) => {
-  const [worldIDProof, setWorldIDProof] = useState(null);
-
   return (
     <InfoContainer lightBg={true} id={"signup"}>
       <InfoWrapper>
@@ -67,67 +63,6 @@ const StepExampleGroup = ({
                 <Step.Content>
                   <Step.Title>MetaMask</Step.Title>
                   <Step.Description>Connect to MetaMask</Step.Description>
-                </Step.Content>
-              </div>
-            </div>
-          </Step>
-
-          <Step disabled={address && !worldIDProof ? false : true}>
-            <div
-              className="step"
-              style={{ height: "90%", flexDirection: "column", flex: 1 }}
-            >
-              <div
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <Step.Group
-                  style={{
-                    border: 0,
-                    marginBottom: "15px",
-                    marginLeft: "-25px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "80px",
-                      marginRight: "20px",
-                    }}
-                  >
-                    <Img
-                      src={require("../../images/worldcoin.png")}
-                      alt="Logo"
-                    />
-                  </div>
-
-                  <Step.Content>
-                    <Step.Title>WorldCoin</Step.Title>
-                    <Step.Description>
-                      Verify yourself using WorldCoin
-                    </Step.Description>
-                  </Step.Content>
-                </Step.Group>
-              </div>
-              {address && (
-                <WorldIDComponent
-                  signal={address}
-                  setProof={(proof) => setWorldIDProof(proof)}
-                />
-              )}
-            </div>
-          </Step>
-
-          <Step disabled={worldIDProof ? false : true}>
-            <div className="link  step" style={{ height: "70%" }}>
-              <div style={{ width: "60px", marginRight: "20px" }}>
-                <Img src={require("../../images/icon.png")} alt="Logo" />
-              </div>
-              <div style={{ flexDirection: "column" }}>
-                <Step.Content>
-                  <Step.Title>NFT</Step.Title>
-                  <Step.Description>Mint an NFT</Step.Description>
-                  <button onClick={mintNFT}>Mint NFT</button>
                 </Step.Content>
               </div>
             </div>

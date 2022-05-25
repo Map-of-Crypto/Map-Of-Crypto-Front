@@ -3,7 +3,6 @@ import { Button } from "../ButtonElements";
 import {
   HeroContainer,
   HeroBg,
-  VideoBg,
   HeroContent,
   HeroH1,
   HeroP,
@@ -11,6 +10,7 @@ import {
   ArrowForward,
   ArrowRight,
 } from "./HeroElements";
+import WorldMap from "../../images/WorldMap.svg";
 
 function HeroSection() {
   const [hover, setHover] = useState(false);
@@ -20,12 +20,13 @@ function HeroSection() {
   };
   return (
     <HeroContainer id="home">
-      <HeroBg />
+      <HeroBg>
+        <img src={WorldMap} style={{ filter: "invert(0.4)" }} alt="Logo" />
+      </HeroBg>
       <HeroContent>
-        <HeroH1>Where Volunteers and Help-Seekers Meet.</HeroH1>
+        <HeroH1>Map of Crypto</HeroH1>
         <HeroP>
-          Wolon is the decentralized web application which allows you to both
-          seek and get help.
+          A place where buyers and sellers from all around the world meet.
         </HeroP>
         <HeroBtnWrapper>
           <Button

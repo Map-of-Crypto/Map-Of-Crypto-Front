@@ -9,6 +9,7 @@ import {
   SocialLogo,
   WebsiteRights,
 } from './FooterElements';
+import Logo from "../../images/moc1.png";
 
 const Footer = () => {
   const toggleHome = () => {
@@ -19,16 +20,13 @@ const Footer = () => {
       <FooterWrap>
         <SocialMedia>
           <SocialMediaWrap>
-            <SocialLogo to='/' onClick={toggleHome}>
-              <div style={{ width: '120px', marginRight: '20px' }}>
-                <Img
-                  src={require('../../images/logo-text-white.png')}
-                  alt='Logo'
-                />
-              </div>{' '}
+            <SocialLogo to="/" onClick={toggleHome}>
+              <div style={{ width: "120px", marginRight: "20px" }}>
+                <Img src={Logo} alt="Logo" style={{ filter: "invert(1)" }} />
+              </div>{" "}
             </SocialLogo>
             <WebsiteRights>
-              Wolon<sup> 3.0</sup> © 2022 All rights reserved.
+              Map<sup>of</sup> Crypto © 2022 All rights reserved.
             </WebsiteRights>
           </SocialMediaWrap>
         </SocialMedia>

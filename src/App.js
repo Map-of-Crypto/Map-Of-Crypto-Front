@@ -12,7 +12,6 @@ const { REACT_APP_CONTRACT_ADDRESS } = process.env;
 
 const App = () => {
   const [dappContract, setDappContract] = useState(null);
-  const [memberNFT, setMemberNFT] = useState(null);
   const [chainId, setChainId] = useState(1);
   const [address, setAddress] = useState("");
   const [provider, setProvider] = useState();
@@ -55,21 +54,17 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {!memberNFT ? (
-          <Route
-            index
-            element={
-              <Home
-                dappContract={dappContract}
-                connect={connect}
-                address={address}
-              />
-            }
-            exact
-          />
-        ) : (
-          <Route path="/*" element={<Home />} exact />
-        )}
+        <Route
+          index
+          element={
+            <Home
+              dappContract={dappContract}
+              connect={connect}
+              address={address}
+            />
+          }
+          exact
+        />
       </Routes>
     </Router>
   );
