@@ -3,6 +3,7 @@ import { Layout, Menu } from 'antd';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import React from 'react';
 import Products from '../Products/Products';
+import Purchases from "../Purchases/Purchases";
 const { Sider, Content } = Layout;
 
 
@@ -34,7 +35,7 @@ const Main = () => {
           }}>
           <Routes exact path="/">
             <Route path="/products" element={<Products />} />
-            <Route path="/purchases" element={<div>TEST</div>} />
+            <Route path="/purchases" element={<Purchases />} />
           </Routes>
         </Content>
       </Layout>
