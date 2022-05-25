@@ -5,8 +5,6 @@ import {
   DAppProvider,
 } from '@usedapp/core'
 
-import App from 'App'
-
 import { BrowserRouter } from 'react-router-dom';
 import Main from './components/Main/Main';
 
