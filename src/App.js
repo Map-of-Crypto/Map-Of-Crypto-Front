@@ -86,10 +86,11 @@ const App = () => {
                 />
               }
             />
-            <Route exact path="/*" element={<Main />}/>
-          </Routes>
-        </Router>
-      </ProviderContext.Provider>
+          ) : (
+            <Route path="/*" element={<Main address={address} />} exact />
+          )}
+        </Routes>
+      </Router>
     </DAppProvider>
   );
 };

@@ -6,19 +6,18 @@ import {
   Message,
   MessageInput,
 } from '@chatscope/chat-ui-kit-react';
-import { useEffect, useState, useCallback } from 'react';
-
-import { Waku } from 'js-waku';
-import { ContentTopic, sendMessage, SimpleChatMessage } from '../../utils';
+import { useEffect, useState, useCallback } from "react";
+import { Waku } from "js-waku";
+import { ContentTopic, sendMessage, SimpleChatMessage } from "../../utils";
 
 export const Chat = ({ address }) => {
   const [waku, setWaku] = useState(undefined);
-  const [wakuStatus, setWakuStatus] = useState('None');
+  const [wakuStatus, setWakuStatus] = useState("None");
   const [sendCounter, setSendCounter] = useState(0);
   const [messages, setMessages] = useState([]);
 
   const sendMessageOnClick = (message) => {
-    if (wakuStatus !== 'Ready') return;
+    if (wakuStatus !== "Ready") return;
 
     message = `You said:\n ${message}`;
     const time = new Date();
@@ -28,7 +27,7 @@ export const Chat = ({ address }) => {
       text: message,
       timestamp: time,
       senderAddress: address,
-      direction: 'outgoing',
+      direction: "outgoing",
     };
 
     setMessages((messages) => {
@@ -42,7 +41,7 @@ export const Chat = ({ address }) => {
     if (!wakuMessage.payload) return;
 
     const { text, timestamp } = SimpleChatMessage.decode(wakuMessage.payload);
-    const fullText = text.split('##&&^^');
+    const fullText = text.split("##&&^^");
     const address = fullText[0];
 
     const msg = `${address.slice(0, 4)}...${address.slice(38, 42)} said:\n ${
@@ -58,7 +57,7 @@ export const Chat = ({ address }) => {
       text: msg,
       timestamp: time,
       senderAddress: address,
-      direction: 'incoming',
+      direction: "incoming",
     };
 
     setMessages((messages) => {
@@ -68,15 +67,15 @@ export const Chat = ({ address }) => {
 
   useEffect(() => {
     if (!!waku) return;
-    if (wakuStatus !== 'None') return;
+    if (wakuStatus !== "None") return;
 
-    setWakuStatus('Starting');
+    setWakuStatus("Starting");
 
     Waku.create({ bootstrap: { default: true } }).then((waku) => {
       setWaku(waku);
-      setWakuStatus('Connecting');
+      setWakuStatus("Connecting");
       waku.waitForRemotePeer().then(() => {
-        setWakuStatus('Ready');
+        setWakuStatus("Ready");
       });
     });
   }, [waku, wakuStatus]);
@@ -92,10 +91,13 @@ export const Chat = ({ address }) => {
   }, [waku, wakuStatus, processIncomingMessage]);
 
   return (
-    <div style={{ flex: 1, backgroundColor: '#151515' }}>
+    <div style={{ flex: 1, backgroundColor: "#151515", height: "90vh" }}>
+      <h3 style={{ color: "white", textAlign: "center" }}>
+        Map of Crypto Chat Room
+      </h3>
       <MainContainer>
-        <ChatContainer style={{ backgroundColor: '#151515' }}>
-          <MessageList scrollBehavior='smooth'>
+        <ChatContainer style={{ backgroundColor: "#151515" }}>
+          <MessageList scrollBehavior="smooth">
             {messages.map((m, i) => (
               <Message
                 key={i}
@@ -109,9 +111,9 @@ export const Chat = ({ address }) => {
             ))}
           </MessageList>
           <MessageInput
-            placeholder='Type message here'
+            placeholder="Type message here"
             onSend={sendMessageOnClick}
-            disabled={wakuStatus !== 'Ready'}
+            disabled={wakuStatus !== "Ready"}
           />
         </ChatContainer>
       </MainContainer>
