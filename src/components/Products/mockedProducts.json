@@ -1,0 +1,255 @@
+{
+  "products": [
+    {
+      "currency": "EUR",
+      "description": "A yellow T-shirt with black font on the front.",
+      "id": "1",
+      "merchant": "1",
+      "name": "Blue T-shirt",
+      "price": "15.25",
+      "shippingCosts": {
+        "DE": "5.00",
+        "HR": "12.00",
+        "MX": "20.00",
+        "PL": "10.00",
+        "US": "15.00"
+      },
+      "store": "C and A"
+    },
+    {
+      "currency": "EUR",
+      "description": "A red T-shirt with black font on the front.",
+      "id": "42",
+      "merchant": "1",
+      "name": "Yellow T-shirt",
+      "price": "15.25",
+      "shippingCosts": {
+        "DE": "5.00",
+        "HR": "12.00",
+        "MX": "20.00",
+        "PL": "10.00",
+        "US": "15.00"
+      },
+      "store": "C and A"
+    },
+    {
+      "currency": "EUR",
+      "description": "A blue T-shirt with black font on the front.",
+      "id": "2",
+      "merchant": "1",
+      "name": "Blue T-shirt",
+      "price": "15.25",
+      "shippingCosts": {
+        "DE": "5.00",
+        "HR": "12.00",
+        "MX": "20.00",
+        "PL": "10.00",
+        "US": "15.00"
+      },
+      "store": "C and A"
+    },
+    {
+      "currency": "EUR",
+      "description": "A yellow T-shirt with black font on the front.",
+      "id": "3",
+      "merchant": "1",
+      "name": "Yellow T-shirt",
+      "price": "15.25",
+      "shippingCosts": {
+        "DE": "5.00",
+        "HR": "12.00",
+        "MX": "20.00",
+        "PL": "10.00",
+        "US": "15.00"
+      },
+      "store": "C and A"
+    },
+    {
+      "id": 5,
+      "description": "Blepharochalasis right upper eyelid",
+      "merchant": "1",
+      "name": "Psophia viridis",
+      "price": 91.59,
+      "gender": "Male",
+      "store": "Terry, White and Koelpin",
+      "shippingCosts": {
+        "DE": 9.18,
+        "HR": 14.02,
+        "MX": 3.31,
+        "PL": 4.49,
+        "US": 0.74
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 6,
+      "description": "Athscl nonbiol bypass of the extrm w intrmt claud, oth extrm",
+      "merchant": "1",
+      "name": "Coracias caudata",
+      "price": 35.35,
+      "gender": "Female",
+      "store": "Langworth-Herman",
+      "shippingCosts": {
+        "DE": 11.58,
+        "HR": 4.85,
+        "MX": 3.59,
+        "PL": 1.82,
+        "US": 19.76
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 7,
+      "description": "Myositis ossificans traumatica, unspecified forearm",
+      "merchant": "1",
+      "name": "Phalacrocorax albiventer",
+      "price": 90.04,
+      "gender": "Male",
+      "store": "Sporer, Dicki and Doyle",
+      "shippingCosts": {
+        "DE": 14.87,
+        "HR": 7.42,
+        "MX": 12.78,
+        "PL": 8.64,
+        "US": 16.1
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 8,
+      "description": "Displ oblique fx shaft of r tibia, 7thD",
+      "merchant": "1",
+      "name": "Dicrostonyx groenlandicus",
+      "price": 95.96,
+      "gender": "Female",
+      "store": "Abernathy, Konopelski and Monahan",
+      "shippingCosts": {
+        "DE": 9.83,
+        "HR": 13.69,
+        "MX": 2.57,
+        "PL": 18.42,
+        "US": 15.81
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 9,
+      "description": "Injury of digital nerve of right little finger",
+      "merchant": "1",
+      "name": "Struthio camelus",
+      "price": 23.76,
+      "gender": "Male",
+      "store": "Connelly Inc",
+      "shippingCosts": {
+        "DE": 0.75,
+        "HR": 14.11,
+        "MX": 8.85,
+        "PL": 3.43,
+        "US": 11.82
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 10,
+      "description": "Laceration without foreign body of left shoulder, sequela",
+      "merchant": "1",
+      "name": "Cracticus nigroagularis",
+      "price": 1.74,
+      "gender": "Male",
+      "store": "Muller, Emard and Langosh",
+      "shippingCosts": {
+        "DE": 18.0,
+        "HR": 14.32,
+        "MX": 17.45,
+        "PL": 6.98,
+        "US": 3.42
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 11,
+      "description": "Anterior displaced Type II dens fracture, sequela",
+      "merchant": "1",
+      "name": "Phoenicopterus ruber",
+      "price": 37.66,
+      "gender": "Female",
+      "store": "Fisher, Casper and Kuhlman",
+      "shippingCosts": {
+        "DE": 7.41,
+        "HR": 5.73,
+        "MX": 17.59,
+        "PL": 13.47,
+        "US": 14.42
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 12,
+      "description": "Acquired absence of other specified parts of digestive tract",
+      "merchant": "1",
+      "name": "Pteropus rufus",
+      "price": 7.26,
+      "gender": "Female",
+      "store": "Kling-Bechtelar",
+      "shippingCosts": {
+        "DE": 2.61,
+        "HR": 11.67,
+        "MX": 2.63,
+        "PL": 12.91,
+        "US": 3.21
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 13,
+      "description": "Unsp mtrcy rider inj in clsn w statnry object nontraf, subs",
+      "merchant": "1",
+      "name": "Tamandua tetradactyla",
+      "price": 9.69,
+      "gender": "Female",
+      "store": "Ziemann-Orn",
+      "shippingCosts": {
+        "DE": 4.03,
+        "HR": 18.57,
+        "MX": 0.74,
+        "PL": 4.57,
+        "US": 14.66
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 14,
+      "description": "Pure motor lacunar syndrome",
+      "merchant": "1",
+      "name": "Dasyurus viverrinus",
+      "price": 8.59,
+      "gender": "Female",
+      "store": "Kuhn, Hand and Rippin",
+      "shippingCosts": {
+        "DE": 17.12,
+        "HR": 11.71,
+        "MX": 19.95,
+        "PL": 2.93,
+        "US": 18.32
+      },
+      "currency": "EUR"
+    },
+    {
+      "id": 15,
+      "description": "Traum hemor right cerebrum w LOC of 30 minutes or less, init",
+      "merchant": "1",
+      "name": "Canis latrans",
+      "price": 1.55,
+      "gender": "Male",
+      "store": "Reynolds Group",
+      "shippingCosts": {
+        "DE": 14.21,
+        "HR": 17.26,
+        "MX": 4.03,
+        "PL": 14.76,
+        "US": 12.2
+      },
+      "currency": "EUR"
+    }
+  ]
+}
