@@ -1,5 +1,5 @@
 import { Button, Card, Col, message, Row } from 'antd';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import merchantMock from './mockedMerchants.json';
 import productMock from './mockedProducts.json';
@@ -48,17 +48,44 @@ const ProductCard = ({ product, merchant }) => {
 };
 
 const Products = () => {
-  const { products } = productMock;
+  const [availableProducts, setAvailableProducts] = useState([]);
+  const [availableMerchants, setAvailableMerchants] = useState([]);
+
+  const getProducts = useCallback(async () => {
+    try {
+      const p = await fetch('https://mapofcrypto-cdppi36oeq-uc.a.run.app/products')
+      const { products } = await p.json();
+      setAvailableProducts(products)
+    } catch (e) {
+      console.error(e)
+    }
+  })
+
+  const getMerchants = useCallback(async () => {
+    try {
+      const p = await fetch('https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchants')
+      const { merchants } = await p.json();
+
+      setAvailableMerchants(merchants)
+    } catch (e) {
+      console.error(e)
+    }
+  })
+
+  useEffect(() => {
+    getProducts()
+    getMerchants()
+  }, [])
 
   const renderProducts = useCallback(() => {
     const { merchants } = merchantMock;
     const getMerchant = (merchantId) => merchants.find((m) => m.id === merchantId);
-    return products.map((product) => (
+    return availableProducts.map((product) => (
       <Col key={`${product.id}`} span={6}>
         <ProductCard product={product} merchant={getMerchant(product.merchant)} />
       </Col>
     ));
-  }, [products]);
+  }, [availableProducts]);
 
   return <Row gutter={[16, 16]}>{renderProducts()}</Row>
 };
