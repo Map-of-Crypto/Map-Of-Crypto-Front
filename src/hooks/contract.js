@@ -2,7 +2,7 @@
 import { ethers } from "ethers";
 import { useContractCall } from "@usedapp/core";
 import MapOfCryptoAbi from "../contracts/abi/MapOfCrypto.json";
-import { contractAddress } from "../contracts/abi/MapOfCrypto.json"
+import { contractAddress } from "../constants";
 
 const mocContractInterface = new ethers.utils.Interface(MapOfCryptoAbi);
 

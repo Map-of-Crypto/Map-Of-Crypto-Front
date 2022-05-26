@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Step } from 'semantic-ui-react';
-import './index.css';
+import React from "react";
+import { Step } from "semantic-ui-react";
+import "./index.css";
 import {
   Column1,
   Column2,
