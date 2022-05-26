@@ -13,19 +13,10 @@ import {
   sectionFive,
 } from '../components/InfoSection/Data';
 import Services from '../components/Services';
-import StepExampleGroup from '../components/Steps';
-import { useProviderContext } from '../App';
+import StepExampleGroup from "../components/Steps";
 
-const Home = ({ dappContract, connect }) => {
+const Home = ({ dappContract, connect, address }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { address } = useProviderContext();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if(address) {
-      navigate('./products');
-    }
-  }, [address])
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -36,7 +27,7 @@ const Home = ({ dappContract, connect }) => {
       const mintTxn = await dappContract.mintMembershipNFT();
       await mintTxn.wait();
     } catch (error) {
-      console.warn('Error: ', error);
+      console.warn("Error: ", error);
     }
   };
 

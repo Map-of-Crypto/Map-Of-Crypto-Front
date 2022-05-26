@@ -1,13 +1,9 @@
-import WalletConnectProvider from "@walletconnect/ethereum-provider";
-import React, { useState, useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { providers } from "ethers";
 import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/ethereum-provider";
+import { BrowserRouter } from "react-router-dom";
 import { Mainnet, Kovan, Mumbai, DAppProvider } from "@usedapp/core";
 
 import Main from "./components/Main/Main";
@@ -27,10 +23,6 @@ const chainConfig = {
 };
 
 const { REACT_APP_CONTRACT_ADDRESS } = process.env;
-
-const ProviderContext = React.createContext({ provider: null, address: null });
-
-export const useProviderContext = () => useContext(ProviderContext);
 
 const App = () => {
   const [dappContract, setDappContract] = useState(null);
@@ -52,8 +44,8 @@ const App = () => {
   });
 
   const reset = () => {
-    setAddress(null);
-    setProvider(null);
+    setAddress("");
+    setProvider(undefined);
     web3Modal.clearCachedProvider();
   };
 
@@ -72,12 +64,11 @@ const App = () => {
 
   return (
     <DAppProvider config={chainConfig}>
-      <ProviderContext.Provider value={{ address, provider }}>
-        <Router>
-          <Routes>
+      <Router>
+        <Routes>
+          {!address ? (
             <Route
               index
-              exact
               element={
                 <Home
                   dappContract={dappContract}
@@ -85,11 +76,13 @@ const App = () => {
                   address={address}
                 />
               }
+              exact
             />
-            <Route exact path="/*" element={<Main />} />
-          </Routes>
-        </Router>
-      </ProviderContext.Provider>
+          ) : (
+            <Route path="/*" element={<Main address={address} />} exact />
+          )}
+        </Routes>
+      </Router>
     </DAppProvider>
   );
 };

@@ -1,7 +1,13 @@
 import { TagOutlined, WalletOutlined, WechatOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
-import React from "react";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import React, { useEffect } from "react";
 import Products from "../Products/Products";
 import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
@@ -21,13 +27,21 @@ const items = [
   },
   {
     label: <Link to="/chat">Chat Room</Link>,
-    key: "/purchases",
+    key: "/chat",
     icon: <WechatOutlined />,
   }, // which is required
 ];
 
 const Main = ({ address }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/products", { replace: true });
+    }
+  }, []);
+
   return (
     <div style={{ display: "flex", alignItems: "stretch", minHeight: "100vh" }}>
       <Layout>
@@ -49,7 +63,7 @@ const Main = ({ address }) => {
           }}
         >
           <Routes exact path="/">
-            <Route path="/products" element={<Products />} />
+            <Route path={"/products" || "/"} element={<Products />} />
             <Route path="/purchases" element={<Purchases />} />
             <Route path="/chat" element={<ChatRoom address={address} />} />
           </Routes>
