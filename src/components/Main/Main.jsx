@@ -1,4 +1,9 @@
-import { TagOutlined, WalletOutlined, WechatOutlined } from "@ant-design/icons";
+import {
+  TagOutlined,
+  WalletOutlined,
+  WechatOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import {
   Link,
@@ -11,6 +16,7 @@ import React, { useEffect } from "react";
 import Products from "../Products/Products";
 import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
+import HelpForm from "../HelpForm";
 
 const { Sider, Content } = Layout;
 
@@ -29,7 +35,12 @@ const items = [
     label: <Link to="/chat">Chat Room</Link>,
     key: "/chat",
     icon: <WechatOutlined />,
-  }, // which is required
+  },
+  {
+    label: <Link to="/sell">Sell</Link>,
+    key: "/sell",
+    icon: <PlusCircleOutlined />,
+  },
 ];
 
 const Main = ({ address }) => {
@@ -66,6 +77,7 @@ const Main = ({ address }) => {
             <Route path={"/products" || "/"} element={<Products />} />
             <Route path="/purchases" element={<Purchases />} />
             <Route path="/chat" element={<ChatRoom address={address} />} />
+            <Route path="/sell" element={<HelpForm />} />
           </Routes>
         </Content>
       </Layout>
@@ -74,4 +86,3 @@ const Main = ({ address }) => {
 };
 
 export default Main;
-

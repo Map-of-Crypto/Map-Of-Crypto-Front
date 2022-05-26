@@ -63,18 +63,15 @@ const customStyles = {
   }),
 };
 
-const HelpForm = ({ dappContract, address, provider }) => {
+const HelpForm = ({ dappContract = "", address = "", provider }) => {
   const [isInPerson, setIsInPerson] = useState(false);
+  const [file, setFile] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(options[0]);
+  const [price, setPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [show, setShow] = useState(false);
-  const [superfluid, setSuperfluid] = useState(undefined);
-  const [existingFlow, setExistingFlow] = useState(false);
-
-  const daiTokenContract = "0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -82,29 +79,15 @@ const HelpForm = ({ dappContract, address, provider }) => {
     setIsLoading(true);
 
     try {
-      // if (existingFlow) {
-      //   throw new Error("You have the stream open");
-      // }
       const storage = new Web3Storage({
         token: process.env.REACT_APP_WEB3_STORAGE,
       });
-
-      // const signer = provider.getSigner(0);
-      // const createFlowOperation = superfluid.cfaV1.createFlow({
-      //   sender: address,
-      //   receiver: process.env.REACT_APP_CONTRACT_ADDRESS,
-      //   superToken: daiTokenContract,
-      //   flowRate: 1000,
-      // });
-      // const txnResponse = await createFlowOperation.exec(signer);
-      // const txnReceipt = await txnResponse.wait();
 
       const helpObject = {
         title: title,
         description: description,
         address: address,
         isOnline: !isInPerson,
-        helpAdCategory: category.value,
       };
 
       const blob = new Blob([JSON.stringify(helpObject)], {
@@ -139,51 +122,36 @@ const HelpForm = ({ dappContract, address, provider }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!provider) {
-  //     setSuperfluid(undefined);
-  //     return;
-  //   }
-  //   SuperfluidFramework.create({
-  //     chainId: 80001,
-  //     provider,
-  //   }).then(setSuperfluid);
-  // }, [provider]);
+  const uploadPhoto = async (event) => {
+    event.preventDefault();
 
-  // useEffect(() => {
-  //   if (!superfluid) return;
-  //   setIsLoading(true);
-  //   const fetchStream = async () => {
-  //     const signer = provider.getSigner(0);
-  //     try {
-  //       const flow = await superfluid.cfaV1.getFlow({
-  //         sender: address,
-  //         receiver: process.env.REACT_APP_CONTRACT_ADDRESS,
-  //         superToken: daiTokenContract,
-  //         providerOrSigner: signer,
-  //       });
-  //       if (Number(flow.flowRate) > 0) {
-  //         console.log(flow);
-  //         setExistingFlow(flow);
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //       setExistingFlow(null);
-  //       setIsLoading(false);
-  //     }
-  //   };
+    try {
+      const storage = new Web3Storage({
+        token: process.env.REACT_APP_WEB3_STORAGE,
+      });
 
-  //   setTimeout(() => {
-  //     fetchStream();
-  //     setIsLoading(false);
-  //   }, 3000);
-  // }, [address, provider, superfluid]);
+      const cid = await storage.put(file, {
+        onRootCidReady: (localCid) => {
+          console.log(`> 🔑 locally calculated Content ID: ${localCid} `);
+          console.log("> 📡 sending files to web3.storage ");
+        },
+        onStoredChunk: (bytes) =>
+          console.log(
+            `> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`
+          ),
+      });
+
+      console.log(`https://${cid}.ipfs.dweb.link/${file[0].name}`);
+    } catch (error) {
+      console.warn("Error: ", error);
+    }
+  };
 
   if (isLoading) {
     return <ActivityIndicator />;
   }
   return (
-    <Container>
+    <>
       <FormWrap>
         <FormContent>
           <div
@@ -229,18 +197,9 @@ const HelpForm = ({ dappContract, address, provider }) => {
             </Alert>
           </div>
 
-          <Form onSubmit={handleSubmit}>
-            <FormH1>Create a Help Request</FormH1>
-            <FormLabel htmlFor="for">Category</FormLabel>
-            <FormSelect
-              defaultValue={options[0]}
-              value={category}
-              onChange={(category) => setCategory(category)}
-              options={options}
-              required
-              styles={customStyles}
-            />
-            <FormLabel htmlFor="for">Title</FormLabel>
+          <Form onSubmit={uploadPhoto}>
+            <FormH1>List your item</FormH1>
+            <FormLabel htmlFor="for">Name of the product</FormLabel>
             <FormInput
               type="text"
               required
@@ -254,22 +213,24 @@ const HelpForm = ({ dappContract, address, provider }) => {
               onChange={(event) => setDescription(event.target.value)}
               required
             />
-
-            <FormLabel htmlFor="for">
-              Should This Help be Performed in Person?
-            </FormLabel>
-            <div style={{ marginBottom: "10px", marginTop: "10px" }}>
-              <Toggle
-                id="isInPerson"
-                defaultChecked={isInPerson}
-                onChange={() => setIsInPerson((prev) => !prev)}
-              />
-            </div>
+            <FormLabel htmlFor="for">Price</FormLabel>
+            <FormInput
+              type="number"
+              required
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
+            />
+            <FormLabel htmlFor="for">Photo</FormLabel>
+            <FormInput
+              type="file"
+              onChange={(event) => setFile(event.target.files)}
+              required
+            />
             <FormButton type="submit">Submit Request</FormButton>
           </Form>
         </FormContent>
       </FormWrap>
-    </Container>
+    </>
   );
 };;
 
