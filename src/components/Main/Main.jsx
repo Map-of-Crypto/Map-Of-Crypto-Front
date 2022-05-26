@@ -17,6 +17,7 @@ import Products from "../Products/Products";
 import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
 import HelpForm from "../HelpForm";
+import { useProviderContext } from "../../App";
 
 const { Sider, Content } = Layout;
 
@@ -43,15 +44,22 @@ const items = [
   },
 ];
 
-const Main = ({ address }) => {
+const Main = () => {
+  const { address } = useProviderContext();
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!address) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate, address]);
 
   useEffect(() => {
     if (location.pathname === "/") {
       navigate("/products", { replace: true });
     }
-  }, []);
+  }, [navigate, location.pathname]);
 
   return (
     <div style={{ display: "flex", alignItems: "stretch", minHeight: "100vh" }}>

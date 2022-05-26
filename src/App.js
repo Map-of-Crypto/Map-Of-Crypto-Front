@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { providers } from "ethers";
 import Web3Modal from "web3modal";
@@ -12,6 +12,12 @@ import Home from "./pages";
 import "./App.css";
 
 export const contractAddress = "0x6ed0039582D833756A87B347A978ECC6652ff028";
+
+
+
+const ProviderContext = React.createContext({address: null, provider: null});
+
+export const useProviderContext = () => useContext(ProviderContext);
 
 const chainConfig = {
   readOnlyChainId: Mainnet.chainId,
@@ -64,25 +70,23 @@ const App = () => {
 
   return (
     <DAppProvider config={chainConfig}>
+      <ProviderContext.Provider value={{provider, address}}>
       <Router>
-        <Routes>
-          {!address ? (
+        <Routes>         
             <Route
+              exact
               index
               element={
                 <Home
                   dappContract={dappContract}
                   connect={connect}
-                  address={address}
                 />
               }
-              exact
             />
-          ) : (
-            <Route path="/*" element={<Main address={address} />} exact />
-          )}
+            <Route exact path="/*" element={<Main />}/>
         </Routes>
       </Router>
+      </ProviderContext.Provider>
     </DAppProvider>
   );
 };

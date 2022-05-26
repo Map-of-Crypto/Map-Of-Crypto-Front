@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
@@ -13,13 +14,22 @@ import {
 } from "../components/InfoSection/Data";
 import Services from "../components/Services";
 import StepExampleGroup from "../components/Steps";
+import { useProviderContext } from "../App";
 
-const Home = ({ connect, address }) => {
+const Home = ({ connect }) => {
+  const { address } = useProviderContext(); 
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if(address) {
+      navigate('/products');
+    }
+  }, [navigate, address]);
 
   return (
     <>
