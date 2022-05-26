@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -46,9 +47,9 @@
     "antd": "^4.20.6",
     "crypto-browserify": "^3.12.0",
     "process": "^0.11.10",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-scripts": "5.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.0",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
@@ -59,7 +60,9 @@
     "start": "cra-webpack-rewired start",
     "build": "cra-webpack-rewired build",
     "test": "cra-webpack-rewired test",
-    "eject": "cra-webpack-rewired eject"
+    "eject": "cra-webpack-rewired eject",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [
