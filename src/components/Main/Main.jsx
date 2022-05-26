@@ -1,9 +1,10 @@
 import { TagOutlined, WalletOutlined } from "@ant-design/icons";
 import { Layout, Menu } from 'antd';
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
-import React from 'react';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import Products from '../Products/Products';
 import Purchases from "../Purchases/Purchases";
+import { useProviderContext } from "../../App";
 const { Sider, Content } = Layout;
 
 
@@ -13,7 +14,17 @@ const items = [
 ];
 
 const Main = () => {
-  const location = useLocation()
+  const location = useLocation();
+  const { provider, address } = useProviderContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!address) {
+      console.log("Should renavigate to app");
+      navigate("/", { replace: true })
+    }
+  }, [])
+
   return (
     <div style={{ display: 'flex', alignItems: 'stretch', minHeight: "100vh" }}>
       <Layout>
@@ -33,7 +44,7 @@ const Main = () => {
             padding: '24px',
             minHeight: 280,
           }}>
-          <Routes exact path="/">
+          <Routes>
             <Route path="/products" element={<Products />} />
             <Route path="/purchases" element={<Purchases />} />
           </Routes>
