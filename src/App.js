@@ -84,7 +84,7 @@ const App = () => {
               exact
             />
           ) : (
-            <Route path="/*" element={<Main />} exact />
+            <Route path="/*" element={<Main address={address} />} exact />
           )}
         </Routes>
       </Router>
