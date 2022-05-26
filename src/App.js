@@ -55,9 +55,6 @@ const App = () => {
   };
 
   const connect = async () => {
-    if (!process.env.REACT_APP_INFURA_ID) {
-      throw new Error("Missing Infura Id");
-    }
     const web3Provider = await web3Modal.connect();
 
     web3Provider.on("disconnect", reset);
@@ -72,21 +69,25 @@ const App = () => {
 
   return (
     <DAppProvider config={chainConfig}>
-    <Router>
-      <Routes>
-        <Route
-          index
-          element={
-            <Home
-              dappContract={dappContract}
-              connect={connect}
-              address={address}
+      <Router>
+        <Routes>
+          {!address ? (
+            <Route
+              index
+              element={
+                <Home
+                  dappContract={dappContract}
+                  connect={connect}
+                  address={address}
+                />
+              }
+              exact
             />
-          }
-          exact
-        />
-      </Routes>
-    </Router>
+          ) : (
+            <Route path="/*" element={<Main />} exact />
+          )}
+        </Routes>
+      </Router>
     </DAppProvider>
   );
 };
