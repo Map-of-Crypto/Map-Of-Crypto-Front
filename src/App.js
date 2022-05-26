@@ -1,21 +1,21 @@
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
 import React, { useState, useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import { providers } from "ethers";
 import Web3Modal from "web3modal";
-import {
-  Mainnet,
-  Kovan,
-  Mumbai,
-  DAppProvider,
-} from '@usedapp/core';
+import { Mainnet, Kovan, Mumbai, DAppProvider } from "@usedapp/core";
 
-import Main from './components/Main/Main';
+import Main from "./components/Main/Main";
 import Home from "./pages";
 
 import "./App.css";
 
-export const contractAddress = "0x6ed0039582D833756A87B347A978ECC6652ff028"
+export const contractAddress = "0x6ed0039582D833756A87B347A978ECC6652ff028";
 
 const chainConfig = {
   readOnlyChainId: Mainnet.chainId,
@@ -23,12 +23,12 @@ const chainConfig = {
     // [Mainnet.chainId]: 'https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934',
     // [Kovan.chainId]: 'https://kovan.infura.io/v3/62687d1a985d4508b2b7a24827551934',
     // [Mumbai.chainId]: RPC NEEDED HERE
-  }
-}
+  },
+};
 
 const { REACT_APP_CONTRACT_ADDRESS } = process.env;
 
-const ProviderContext = React.createContext({ provider: null, address: null })
+const ProviderContext = React.createContext({ provider: null, address: null });
 
 export const useProviderContext = () => useContext(ProviderContext);
 
@@ -86,11 +86,10 @@ const App = () => {
                 />
               }
             />
-          ) : (
-            <Route path="/*" element={<Main address={address} />} exact />
-          )}
-        </Routes>
-      </Router>
+            <Route exact path="/*" element={<Main />} />
+          </Routes>
+        </Router>
+      </ProviderContext.Provider>
     </DAppProvider>
   );
 };
