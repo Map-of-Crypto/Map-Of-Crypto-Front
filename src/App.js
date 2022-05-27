@@ -6,6 +6,7 @@ import { Mainnet, Mumbai, DAppProvider, useEthers } from "@usedapp/core";
 
 import { utils, Contract, providers } from "ethers";
 import MapOfCryptoAbi from "./contracts/abi/MapOfCrypto.json";
+import AggregatorV3Interface from "./contracts/abi/AggregatorV3Interface.json";
 import { ContractContext } from "./hooks/contract";
 
 import Main from "./components/Main/Main";
@@ -13,7 +14,11 @@ import Home from "./pages";
 
 import "./App.css";
 
-export const contractAddress = "0x6ed0039582D833756A87B347A978ECC6652ff028";
+export const contractAddress = "0xF39cA6DaB68984bf3caF256aa3fB9fDF4EF591a7";
+export const aggregatorContractAddress = "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada"
+
+const mocContractInterface = new utils.Interface(MapOfCryptoAbi);
+const aggregatorV3Interface = new utils.Interface(AggregatorV3Interface);
 
 const chainConfig = {
   networks: [Mumbai],
@@ -46,6 +51,7 @@ const { REACT_APP_CONTRACT_ADDRESS } = process.env;
 
 const App = () => {
   const [dappContract, setDappContract] = useState(null);
+  const [aggregatorContract, setAggregatorContract] = useState(null);
   const [chainId, setChainId] = useState(1);
   const [address, setAddress] = useState("");
   const [provider, setProvider] = useState();
@@ -73,16 +79,18 @@ const App = () => {
     setChainId(web3Provider.chainId);
 
     const provider = new providers.Web3Provider(web3Provider);
-    const mocContractInterface = new utils.Interface(MapOfCryptoAbi);
-    console.log(provider.getSigner())
+    console.log(provider.getSigner());
+
     const contract = new Contract(contractAddress, mocContractInterface, provider.getSigner());
+    const aggregateContract = new Contract(aggregatorContractAddress, aggregatorV3Interface, provider.getSigner());
     setProvider(provider);
-    setDappContract(contract)
+    setDappContract(contract);
+    setAggregatorContract(aggregateContract);
   };
 
   return (
     <DAppProvider config={chainConfig}>
-      <ContractContext.Provider value={{ provider, address, dappContract }}>
+      <ContractContext.Provider value={{ provider, address, dappContract, aggregatorContract }}>
         <Router>
           <Routes>
             <Route
