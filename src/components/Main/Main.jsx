@@ -18,6 +18,7 @@ import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
 import HelpForm from "../HelpForm";
 import { useProviderContext } from "../../App";
+import { useContractContext } from "../../hooks/contract";
 
 const { Sider, Content } = Layout;
 
@@ -45,7 +46,7 @@ const items = [
 ];
 
 const Main = () => {
-  const { address } = useProviderContext();
+  const { address } = useContractContext();
   const location = useLocation();
   const navigate = useNavigate();
 

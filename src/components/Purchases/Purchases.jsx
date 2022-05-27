@@ -1,17 +1,17 @@
 import { CheckSquareFilled, CloseSquareFilled } from "@ant-design/icons";
 import { Table } from 'antd';
-import React, { useEffect, useMemo } from 'react'
-import mockedPurchase from './mockedPurchaseStruct.json';
+import React, { useCallback, useEffect, useState } from 'react'
 import { red, green } from '@ant-design/colors';
+import { useContractContext } from "../../hooks/contract";
 
 const columns = [
   {
     title: "accepted",
     dataIndex: "accepted",
     key: "accepted",
-    render: (_, { accepted }) => ( 
-      <> 
-        {accepted ? <CheckSquareFilled style={{fontSize: '16px', color: green.primary}} /> : <CloseSquareFilled style={{fontSize: '16px', color: red.primary}}/>}
+    render: (_, { accepted }) => (
+      <>
+        {accepted ? <CheckSquareFilled style={{ fontSize: '16px', color: green.primary }} /> : <CloseSquareFilled style={{ fontSize: '16px', color: red.primary }} />}
       </>
     )
   },
@@ -53,21 +53,24 @@ const columns = [
 ]
 
 function Purchases() {
-  useEffect(() => {
-    console.log({red, green})
-    console.log(mockedPurchase)
-  }, [])
-  const purchases = useMemo(() => { return mockedPurchase.map(p => {
-   const [ purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber ] = p;
-   return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber }
-  })}, [])
+  const [purchases, setPurchases] = useState([])
+
+  const { dappContract } = useContractContext();
+  const getPurchases = useCallback(async () => {
+    const res = await dappContract.getPurchaseList()
+    const results = res.map(p => {
+      const [purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber] = p;
+      return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber }
+    })
+    setPurchases(results);
+  }, [dappContract]);
 
   useEffect(() => {
-    console.log(purchases)
-  }, [purchases])
+    getPurchases()
+  }, [])
+
   return (
-    <div style={{padding: "24px, 24px"}}>
-      Wafelki
+    <div style={{ padding: "24px, 24px" }}>
       <Table dataSource={purchases} columns={columns} />
 
     </div>
