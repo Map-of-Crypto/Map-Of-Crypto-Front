@@ -17,7 +17,7 @@ import React, { useEffect } from "react";
 import Products from "../Products/Products";
 import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
-import HelpForm from "../HelpForm";
+import HelpForm from "../ListItem";
 import { MapApp } from "../Map/Map";
 import { useProviderContext } from "../../App";
 import { useContractContext } from "../../hooks/contract";
@@ -70,7 +70,13 @@ const Main = () => {
   }, [navigate, location.pathname]);
 
   return (
-    <div style={{ display: "flex", alignItems: "stretch", minHeight: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "stretch",
+        minHeight: "100vh",
+      }}
+    >
       <Layout>
         <Sider className="site-layout-background" width={200}>
           <Menu

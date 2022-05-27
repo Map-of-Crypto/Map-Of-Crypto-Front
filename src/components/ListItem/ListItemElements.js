@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import Select from 'react-select';
+import styled from "styled-components";
+import Select from "react-select";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export const Container = styled.div`
   min-height: 692px;
@@ -52,7 +52,7 @@ export const FormContent = styled.div`
 `;
 
 export const Form = styled.form`
-  background: #1d1e22;
+  background: white;
   max-width: 400px;
   height: auto;
   width: 100%;
@@ -70,7 +70,7 @@ export const Form = styled.form`
 
 export const FormH1 = styled.h1`
   margin-bottom: 40px;
-  color: #fff;
+  color: black;
   font-size: 20px;
   font-weight: 800;
   text-align: center;
@@ -79,7 +79,7 @@ export const FormH1 = styled.h1`
 export const FormLabel = styled.label`
   margin-bottom: 8px;
   font-size: 14px;
-  color: #fff;
+  color: black;
 `;
 export const FormSelect = styled(Select)`
   margin-bottom: 32px;
