@@ -7,9 +7,9 @@ const ActivityIndicator = () => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
-    animationData: require('../../lotties/heartLoader.json'),
+    animationData: require("../../lotties/loading.json"),
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
+      preserveAspectRatio: "xMidYMid slice",
     },
   };
 
