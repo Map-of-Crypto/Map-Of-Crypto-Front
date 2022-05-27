@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Web3Storage } from "web3.storage";
 import { ethers } from "ethers";
 import Alert from "react-bootstrap/Alert";
@@ -16,6 +16,7 @@ import {
   FormSelect,
   FormArea,
 } from "./HelpFormElements";
+import { LocationPicker } from "../Map/LocationPicker";
 import ActivityIndicator from "../ActivityIndicator";
 import "react-toggle/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -65,6 +66,7 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
   const [file, setFile] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [latlng, setLatlng] = useState(null);
   const [price, setPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -76,6 +78,7 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
     setIsLoading(true);
 
     try {
+      console.log(latlng);
       const storage = new Web3Storage({
         token: process.env.REACT_APP_WEB3_STORAGE,
       });
@@ -108,6 +111,8 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
         },
         store: "C and A",
         img: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
+        lattitude: latlng ? latlng.lat : 0,
+        longitude: latlng ? latlng.lng : 0,
       };
 
       const requestOptions = {
@@ -124,13 +129,6 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      console.warn("Error: ", error);
-    }
-  };
-
-  const uploadPhoto = async () => {
-    try {
-    } catch (error) {
       console.warn("Error: ", error);
     }
   };
@@ -214,6 +212,12 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
               onChange={(event) => setFile(event.target.files)}
               required
             />
+            <FormLabel htmlFor="for">
+              Please select the location of the product
+            </FormLabel>
+            <div style={{ height: "100px", marginBottom: "10px" }}>
+              <LocationPicker setPosition={setLatlng} />
+            </div>
             <FormButton type="submit">Submit Request</FormButton>
           </Form>
         </FormContent>
