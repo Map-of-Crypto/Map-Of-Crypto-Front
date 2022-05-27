@@ -54,7 +54,7 @@ const ProductCard = ({ product, merchant }) => {
         <img
           alt={product.name}
           src={product.img ? product.img : "https://picsum.photos/300/300"}
-          style={{ height: "300px" }}
+          style={{ height: 200, width: 200 }}
         />
       }
       hoverable
@@ -64,7 +64,7 @@ const ProductCard = ({ product, merchant }) => {
         <Button onClick={initiateBuy}>Buy</Button>,
       ]}
     >
-      <div>{product.description}</div>
+      <div style={{ height: 40 }}>{product.description}</div>
     </Card>
   );
 };

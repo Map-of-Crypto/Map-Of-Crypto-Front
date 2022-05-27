@@ -21,12 +21,6 @@ import ActivityIndicator from "../ActivityIndicator";
 import "react-toggle/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const options = [
-  { value: "study", label: "Study" },
-  { value: "fixing", label: "Fixing" },
-  { value: "social", label: "Social" },
-];
-
 const customStyles = {
   control: (base, state) => ({
     ...base,
@@ -137,92 +131,90 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
     return <ActivityIndicator />;
   }
   return (
-    <>
-      <FormWrap>
-        <FormContent>
-          <div
-            style={{
-              width: "300px",
-              alignSelf: "center",
-              position: "absolute",
-              zIndex: 10000,
-              left: "auto",
-              top: "auto",
-            }}
+    <FormWrap>
+      <FormContent>
+        <div
+          style={{
+            width: "300px",
+            alignSelf: "center",
+            position: "absolute",
+            zIndex: 10000,
+            left: "auto",
+            top: "auto",
+          }}
+        >
+          <Alert
+            show={show && isValid}
+            onClose={() => setShow(false)}
+            variant="success"
+            dismissible
           >
-            <Alert
-              show={show && isValid}
-              onClose={() => setShow(false)}
-              variant="success"
-              dismissible
-            >
-              <Alert.Heading>Success!</Alert.Heading>
-              <p>Your help request has been published successfully!</p>
-              <p>It might take a few minutes to appear on your dashboard.</p>
-              <hr />
-              <p className="mb-0">
-                You have opened a continuous cashflow that will be sending money
-                as long as your Advert is being shown, you can delete the Advert
-                and cancel the subscription at any point.
-              </p>
-            </Alert>
+            <Alert.Heading>Success!</Alert.Heading>
+            <p>Your help request has been published successfully!</p>
+            <p>It might take a few minutes to appear on your dashboard.</p>
+            <hr />
+            <p className="mb-0">
+              You have opened a continuous cashflow that will be sending money
+              as long as your Advert is being shown, you can delete the Advert
+              and cancel the subscription at any point.
+            </p>
+          </Alert>
 
-            <Alert
-              show={show && !isValid}
-              onClose={() => setShow(false)}
-              variant="danger"
-              dismissible
-            >
-              <Alert.Heading>Oh Snap!</Alert.Heading>
-              <p>It seems like something went wrong :/</p>
-              <hr />
-              <p className="mb-0">
-                If you already have a running Advert you need to cancel it
-                first. You can only have one Advert running at a time.
-              </p>
-            </Alert>
+          <Alert
+            show={show && !isValid}
+            onClose={() => setShow(false)}
+            variant="danger"
+            dismissible
+          >
+            <Alert.Heading>Oh Snap!</Alert.Heading>
+            <p>It seems like something went wrong :/</p>
+            <hr />
+            <p className="mb-0">
+              If you already have a running Advert you need to cancel it first.
+              You can only have one Advert running at a time.
+            </p>
+          </Alert>
+        </div>
+
+        <Form onSubmit={handleSubmit}>
+          <FormH1>List your item</FormH1>
+          <FormLabel htmlFor="for">Name of the product</FormLabel>
+          <FormInput
+            type="text"
+            required
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+          <FormLabel htmlFor="for">Description</FormLabel>
+          <FormArea
+            type="text"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            required
+          />
+          <FormLabel htmlFor="for">Price</FormLabel>
+          <FormInput
+            type="number"
+            required
+            value={price}
+            onChange={(event) => setPrice(event.target.value)}
+          />
+          <FormLabel htmlFor="for">Photo</FormLabel>
+          <FormInput
+            type="file"
+            onChange={(event) => setFile(event.target.files)}
+            required
+          />
+          <FormLabel htmlFor="for">
+            Please select the location of the product
+          </FormLabel>
+          <div style={{ height: "100px", marginBottom: "10px" }}>
+            <LocationPicker setPosition={setLatlng} />
           </div>
-
-          <Form onSubmit={handleSubmit}>
-            <FormH1>List your item</FormH1>
-            <FormLabel htmlFor="for">Name of the product</FormLabel>
-            <FormInput
-              type="text"
-              required
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-            />
-            <FormLabel htmlFor="for">Description</FormLabel>
-            <FormArea
-              type="text"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              required
-            />
-            <FormLabel htmlFor="for">Price</FormLabel>
-            <FormInput
-              type="number"
-              required
-              value={price}
-              onChange={(event) => setPrice(event.target.value)}
-            />
-            <FormLabel htmlFor="for">Photo</FormLabel>
-            <FormInput
-              type="file"
-              onChange={(event) => setFile(event.target.files)}
-              required
-            />
-            <FormLabel htmlFor="for">
-              Please select the location of the product
-            </FormLabel>
-            <div style={{ height: "100px", marginBottom: "10px" }}>
-              <LocationPicker setPosition={setLatlng} />
-            </div>
-            <FormButton type="submit">Submit Request</FormButton>
-          </Form>
-        </FormContent>
-      </FormWrap>
-    </>
+          <FormButton type="submit">Submit Request</FormButton>
+        </Form>
+      </FormContent>
+    </FormWrap>
   );
 };
 
