@@ -13,12 +13,13 @@ const ProductCard = ({ product, merchant }) => {
       await message.success({
         content: (
           <span>
-            Success:{' '}
+            Success:{" "}
             <a
               target="_blank"
               title="Transaction hash"
-              href={`https://kovan.etherscan.io/tx/${res.hash}`}
-              rel="noreferrer">
+              href={`https://mumbai.polygonscan.com//tx/${res.hash}`}
+              rel="noreferrer"
+            >
               Check transaction on etherscan
             </a>
           </span>
