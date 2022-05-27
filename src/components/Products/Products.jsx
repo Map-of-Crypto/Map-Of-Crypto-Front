@@ -4,24 +4,27 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useContractContext } from '../../hooks/contract';
 
 const ProductCard = ({ product, merchant }) => {
-  const [maticPrice, setMaticPrice] = useState(null)
-  const { dappContract, aggregatorContract } = useContractContext()
-
+  const [maticPrice, setMaticPrice] = useState(null);
+  const { dappContract, aggregatorContract } = useContractContext();
 
   const getMaticPrice = useCallback(async () => {
     const { answer } = await aggregatorContract?.latestRoundData();
-    setMaticPrice((answer.toNumber() / (10**8)))
+    setMaticPrice(answer.toNumber() / 10 ** 8);
   }, [aggregatorContract]);
 
   useEffect(() => {
-    getMaticPrice()
-  }, [])
+    getMaticPrice();
+  }, []);
   const initiateBuy = async () => {
-    const key = 'updatable';
-    await message.loading({ content: 'Waiting for acceptance...', key });
+    const key = "updatable";
+    await message.loading({ content: "Waiting for acceptance...", key });
     try {
       const priceToSend = utils.parseUnits(`${product.price * maticPrice}`);
-      const res = await dappContract?.makePurchaseRequest(merchant.id, product.id, { value: priceToSend });
+      const res = await dappContract?.makePurchaseRequest(
+        merchant.id,
+        product.id,
+        { value: priceToSend }
+      );
       await message.success({
         content: (
           <span>
@@ -51,6 +54,7 @@ const ProductCard = ({ product, merchant }) => {
         <img
           alt={product.name}
           src={product.img ? product.img : "https://picsum.photos/300/300"}
+          style={{ height: "300px" }}
         />
       }
       hoverable
@@ -71,40 +75,48 @@ const Products = () => {
 
   const getProducts = useCallback(async () => {
     try {
-      const p = await fetch('https://mapofcrypto-cdppi36oeq-uc.a.run.app/products')
+      const p = await fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
+      );
       const { products } = await p.json();
-      setAvailableProducts(products)
+      setAvailableProducts(products);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }, [])
+  }, []);
 
   const getMerchants = useCallback(async () => {
     try {
-      const m = await fetch('https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchants')
+      const m = await fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchants"
+      );
       const { merchants } = await m.json();
 
-      setAvailableMerchants(merchants)
+      setAvailableMerchants(merchants);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    getProducts()
-    getMerchants()
-  }, [getProducts, getMerchants])
+    getProducts();
+    getMerchants();
+  }, [getProducts, getMerchants]);
 
   const renderProducts = useCallback(() => {
-    const getMerchant = (merchantId) => availableMerchants.find((m) => m.id === merchantId);
-    return availableProducts.map((product) => (
-      <Col key={`${product.id}`} span={6}>
-        <ProductCard product={product} merchant={getMerchant(product.merchant)} />
+    const getMerchant = (merchantId) =>
+      availableMerchants.find((m) => m.id === merchantId);
+    return availableProducts.map((product, index) => (
+      <Col key={`${product.id}${index}`} span={6}>
+        <ProductCard
+          product={product}
+          merchant={getMerchant(product.merchant)}
+        />
       </Col>
     ));
   }, [availableProducts, availableMerchants]);
 
-  return <Row gutter={[16, 16]}>{renderProducts()}</Row>
+  return <Row gutter={[16, 16]}>{renderProducts()}</Row>;
 };
 
 export default Products;
