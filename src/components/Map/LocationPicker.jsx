@@ -1,12 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Wrapper } from "@googlemaps/react-wrapper";
-import {
-  GoogleMap,
-  Marker,
-  InfoWindow,
-  LoadScript,
-} from "@react-google-maps/api";
 import { createCustomEqual } from "fast-equals";
 
 const render = (status) => {
@@ -76,44 +70,50 @@ function useDeepCompareEffectForMaps(callback, dependencies) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  ReactDom.render(<MapApp />, document.getElementById("root"));
+  ReactDom.render(<LocationPicker />, document.getElementById("root"));
 });
 
-export const MapApp = () => {
-  const [productsList, setProductsList] = useState([]);
+const Marker = (options) => {
+  const [marker, setMarker] = React.useState();
+
+  React.useEffect(() => {
+    if (!marker) {
+      setMarker(new google.maps.Marker());
+    }
+
+    // remove marker from map on unmount
+    return () => {
+      if (marker) {
+        marker.setMap(null);
+      }
+    };
+  }, [marker]);
+  React.useEffect(() => {
+    if (marker) {
+      marker.setOptions(options);
+    }
+  }, [marker, options]);
+  return null;
+};
+
+export const LocationPicker = ({ setPosition }) => {
+  const [location, setLocation] = useState(null);
   const [zoom, setZoom] = useState(3); // initial zoom
   const [center, setCenter] = useState({
     lat: 0,
     lng: 0,
   });
-  const [infoWindowID, setInfoWindowID] = useState("");
+
+  const onClick = (e) => {
+    setLocation(e.latLng);
+    setPosition(JSON.parse(JSON.stringify(e.latLng.toJSON(), null, 2)));
+  };
 
   const onIdle = (m) => {
     console.log("onIdle");
     setZoom(m.getZoom());
     setCenter(m.getCenter().toJSON());
   };
-
-  const getProducts = useCallback(async () => {
-    try {
-      const productsList = await fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
-      );
-      const { products } = await productsList.json();
-      const listOfMarkers = products.map((product) => ({
-        lat: product.lattitude,
-        lng: product.longitude,
-      }));
-
-      setProductsList([...products]);
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  useEffect(() => {
-    getProducts();
-  }, [getProducts]);
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
@@ -123,34 +123,12 @@ export const MapApp = () => {
       >
         <Map
           center={center}
+          onClick={onClick}
           onIdle={onIdle}
           zoom={zoom}
           style={{ flexGrow: "1", height: "100%" }}
         >
-          {productsList.map((product, i) => (
-            <Marker
-              key={i}
-              position={{
-                lat: product.lattitude,
-                lng: product.longitude,
-              }}
-              onClick={() => {
-                setInfoWindowID(i + 1);
-              }}
-            >
-              {infoWindowID === i + 1 && (
-                <InfoWindow>
-                  <>
-                    <h4>{product.name}</h4>
-                    <p>{product.description}</p>
-                    <p>
-                      Price: {product.price} {product.currency}
-                    </p>
-                  </>
-                </InfoWindow>
-              )}
-            </Marker>
-          ))}
+          {location && <Marker position={location} />}
         </Map>
       </Wrapper>
     </div>
