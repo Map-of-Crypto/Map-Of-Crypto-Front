@@ -80,7 +80,7 @@ const Navbar = ({ toggle, connect, address }) => {
                   exact="true"
                   offset={-80}
                 >
-                  Services
+                  How it Works
                 </NavLinks>
               </NavItem>
               <NavItem>

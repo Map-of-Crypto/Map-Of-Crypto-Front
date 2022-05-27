@@ -1,5 +1,4 @@
-import { Container } from '../components/SignIn/SigninElements';
-import { Chat } from '../components/Chat/chat';
+import { Chat } from "../components/Chat/chat";
 
 export const ChatRoom = ({ address }) => {
   return (

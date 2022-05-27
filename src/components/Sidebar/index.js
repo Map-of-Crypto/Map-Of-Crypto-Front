@@ -19,52 +19,62 @@ const Sidebar = ({ isOpen, toggle }) => {
       <SidebarWrapper>
         <SidebarMenu>
           <SidebarLink
-            to='about'
+            to="about"
             onClick={toggle}
             smooth={true}
             duration={500}
             spy={true}
-            exact='true'
+            exact="true"
             offset={-80}
           >
-            About
+            Sell
           </SidebarLink>
           <SidebarLink
-            to='discover'
+            to="discover"
             onClick={toggle}
             smooth={true}
             duration={500}
             spy={true}
-            exact='true'
+            exact="true"
             offset={-80}
           >
-            Discover
+            Buy
           </SidebarLink>
           <SidebarLink
-            to='services'
+            to="services"
             onClick={toggle}
             smooth={true}
             duration={500}
             spy={true}
-            exact='true'
+            exact="true"
             offset={-80}
           >
-            Services
+            How it Works
           </SidebarLink>
           <SidebarLink
-            to='signup'
+            to="signup"
             onClick={toggle}
             smooth={true}
             duration={500}
             spy={true}
-            exact='true'
+            exact="true"
             offset={-80}
           >
             Sign Up
           </SidebarLink>
         </SidebarMenu>
         <SideBtnWrap>
-          <SidebarRoute to='/signin'>Sign In</SidebarRoute>
+          <SidebarRoute
+            to="signup"
+            onClick={toggle}
+            smooth={true}
+            duration={500}
+            spy={true}
+            exact="true"
+            offset={-80}
+          >
+            Sign In
+          </SidebarRoute>
         </SideBtnWrap>
       </SidebarWrapper>
     </SidebarContainer>
