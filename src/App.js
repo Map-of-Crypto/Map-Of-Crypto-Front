@@ -1,13 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
-import { BrowserRouter } from "react-router-dom";
-import { Mainnet, Kovan, Mumbai, DAppProvider, useEthers } from "@usedapp/core";
+import { Mainnet, Mumbai, DAppProvider, useEthers } from "@usedapp/core";
 
 import { utils, Contract, providers } from "ethers";
-import { useContractFunction } from "@usedapp/core";
 import MapOfCryptoAbi from "./contracts/abi/MapOfCrypto.json";
+import { ContractContext } from "./hooks/contract";
 
 import Main from "./components/Main/Main";
 import Home from "./pages";
@@ -15,12 +14,6 @@ import Home from "./pages";
 import "./App.css";
 
 export const contractAddress = "0x6ed0039582D833756A87B347A978ECC6652ff028";
-
-
-
-const ProviderContext = React.createContext({ address: null, provider: null });
-
-export const useProviderContext = () => useContext(ProviderContext);
 
 const chainConfig = {
   networks: [Mumbai],
@@ -89,7 +82,7 @@ const App = () => {
 
   return (
     <DAppProvider config={chainConfig}>
-      <ProviderContext.Provider value={{ provider, address, dappContract }}>
+      <ContractContext.Provider value={{ provider, address, dappContract }}>
         <Router>
           <Routes>
             <Route
@@ -105,7 +98,7 @@ const App = () => {
             <Route exact path="/*" element={<Main />} />
           </Routes>
         </Router>
-      </ProviderContext.Provider>
+      </ContractContext.Provider>
     </DAppProvider>
   );
 };

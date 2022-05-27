@@ -1,15 +1,15 @@
 import { Button, Card, Col, message, Row } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useContractContext } from '../../hooks/contract';
 
 const ProductCard = ({ product, merchant }) => {
-  // const ethersContext = useEthersContext();
-  // const mapOfCrypto = useAppContracts('MapOfCrypto', ethersContext.chainId);
+  const { dappContract } = useContractContext()
 
   const initiateBuy = async () => {
     const key = 'updatable';
     await message.loading({ content: 'Waiting for acceptance...', key });
     try {
-      // const res = await mapOfCrypto?.makePurchaseRequest(merchant.id, product.id);
+      const res = await dappContract?.makePurchaseRequest(merchant.id, product.id);
       await message.success({
         content: (
           <span>
@@ -17,7 +17,7 @@ const ProductCard = ({ product, merchant }) => {
             <a
               target="_blank"
               title="Transaction hash"
-              href={`https://kovan.etherscan.io/tx/${'yada%20yada'}`}
+              href={`https://kovan.etherscan.io/tx/${res.hash}`}
               rel="noreferrer">
               Check transaction on etherscan
             </a>

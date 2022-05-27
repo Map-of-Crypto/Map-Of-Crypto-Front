@@ -1,9 +1,8 @@
 import { CheckSquareFilled, CloseSquareFilled } from "@ant-design/icons";
-import { Table, Button } from 'antd';
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import mockedPurchase from './mockedPurchaseStruct.json';
+import { Table } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react'
 import { red, green } from '@ant-design/colors';
-import { useProviderContext } from "../../App";
+import { useContractContext } from "../../hooks/contract";
 
 const columns = [
   {
@@ -56,7 +55,7 @@ const columns = [
 function Purchases() {
   const [purchases, setPurchases] = useState([])
 
-  const { dappContract } = useProviderContext();
+  const { dappContract } = useContractContext();
   const getPurchases = useCallback(async () => {
     const res = await dappContract.getPurchaseList()
     const results = res.map(p => {

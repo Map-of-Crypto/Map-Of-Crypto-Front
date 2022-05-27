@@ -1,14 +1,17 @@
 // hooks/index.ts
 import { utils, Contract } from "ethers";
+import React, { useContext } from 'react';
 import { useContractFunction } from "@usedapp/core";
 import MapOfCryptoAbi from "../contracts/abi/MapOfCrypto.json";
 import { contractAddress } from "../constants";
-import { useProviderContext } from '../App';
 
 const mocContractInterface = new utils.Interface(MapOfCryptoAbi);
+export const ContractContext = React.createContext({ address: null, provider: null, dappContract: null });
+
+export const useContractContext = () => useContext(ContractContext);
 
 export function usePurchaseList() {
-  const { provider } = useProviderContext();
+  const { provider } = useContractContext();
   console.log(provider.getSigner())
   const signer = provider.getSigner()
   const contract = new Contract(contractAddress, mocContractInterface, signer)

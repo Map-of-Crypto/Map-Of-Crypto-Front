@@ -14,10 +14,10 @@ import {
 } from "../components/InfoSection/Data";
 import Services from "../components/Services";
 import StepExampleGroup from "../components/Steps";
-import { useProviderContext } from "../App";
+import { useContractContext } from "../hooks/contract";
 
 const Home = ({ connect }) => {
-  const { address } = useProviderContext(); 
+  const { address } = useContractContext(); 
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
