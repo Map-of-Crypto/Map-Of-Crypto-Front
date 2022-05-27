@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Web3Storage } from "web3.storage";
-import { Framework as SuperfluidFramework } from "@superfluid-finance/sdk-core";
 import { ethers } from "ethers";
-import "react-toggle/style.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "react-bootstrap/Alert";
-
+import Toggle from "react-toggle";
+import { Button } from "semantic-ui-react";
 import {
-  Container,
   FormWrap,
   FormContent,
   Form,
@@ -18,10 +15,9 @@ import {
   FormSelect,
   FormArea,
 } from "./HelpFormElements";
-
-import Toggle from "react-toggle";
 import ActivityIndicator from "../ActivityIndicator";
-import { Button } from "semantic-ui-react";
+import "react-toggle/style.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const options = [
   { value: "study", label: "Study" },
@@ -232,6 +228,6 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
       </FormWrap>
     </>
   );
-};;
+};
 
 export default HelpForm;
