@@ -34,10 +34,19 @@ const ProductCard = ({ product, merchant }) => {
 
   return (
     <Card
-      cover={<img alt="example" src="https://picsum.photos/300/300" />}
+      cover={
+        <img
+          alt={product.name}
+          src={product.img ? product.img : "https://picsum.photos/300/300"}
+        />
+      }
       hoverable
       title={product.name}
-      actions={[<div>{`Price: ${product.price}${product.currency}`}</div>, <Button onClick={initiateBuy}>Buy</Button>]}>
+      actions={[
+        <div>{`Price: ${product.price}${product.currency}`}</div>,
+        <Button onClick={initiateBuy}>Buy</Button>,
+      ]}
+    >
       <div>{product.description}</div>
     </Card>
   );

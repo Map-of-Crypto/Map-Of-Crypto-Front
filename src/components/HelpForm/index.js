@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import Alert from "react-bootstrap/Alert";
 import Toggle from "react-toggle";
 import { Button } from "semantic-ui-react";
+import { uid } from "uid";
 import {
   FormWrap,
   FormContent,
@@ -79,19 +80,8 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
         token: process.env.REACT_APP_WEB3_STORAGE,
       });
 
-      const helpObject = {
-        title: title,
-        description: description,
-        address: address,
-        isOnline: !isInPerson,
-      };
-
-      const blob = new Blob([JSON.stringify(helpObject)], {
-        type: "application/json",
-      });
-      const file = new File([blob], "helpPost.json");
-
-      const cid = await storage.put([file], {
+      const cid = await storage.put(file, {
+        maxRetries: 3,
         onRootCidReady: (localCid) => {
           console.log(`> 🔑 locally calculated Content ID: ${localCid} `);
           console.log("> 📡 sending files to web3.storage ");
@@ -102,42 +92,44 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
           ),
       });
 
-      const helpRequestLink = `${cid}.ipfs.dweb.link/helpPost.json`;
+      const product = {
+        currency: "USD",
+        description: description,
+        id: uid(16),
+        merchant: address,
+        name: title,
+        price: price,
+        shippingCosts: {
+          DE: "5.00",
+          HR: "12.00",
+          MX: "20.00",
+          PL: "10.00",
+          US: "15.00",
+        },
+        store: "C and A",
+        img: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
+      };
 
-      const addRequest = await dappContract.addHelpAd(helpRequestLink);
-      await addRequest.wait();
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      };
+      fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((data) => console.log(data));
       setIsLoading(false);
-      setIsValid(true);
-      setShow(true);
     } catch (error) {
-      console.warn("Error: ", error);
-
       setIsLoading(false);
-      setIsValid(false);
-      setShow(true);
+      console.warn("Error: ", error);
     }
   };
 
-  const uploadPhoto = async (event) => {
-    event.preventDefault();
-
+  const uploadPhoto = async () => {
     try {
-      const storage = new Web3Storage({
-        token: process.env.REACT_APP_WEB3_STORAGE,
-      });
-
-      const cid = await storage.put(file, {
-        onRootCidReady: (localCid) => {
-          console.log(`> 🔑 locally calculated Content ID: ${localCid} `);
-          console.log("> 📡 sending files to web3.storage ");
-        },
-        onStoredChunk: (bytes) =>
-          console.log(
-            `> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`
-          ),
-      });
-
-      console.log(`https://${cid}.ipfs.dweb.link/${file[0].name}`);
     } catch (error) {
       console.warn("Error: ", error);
     }
@@ -193,7 +185,7 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
             </Alert>
           </div>
 
-          <Form onSubmit={uploadPhoto}>
+          <Form onSubmit={handleSubmit}>
             <FormH1>List your item</FormH1>
             <FormLabel htmlFor="for">Name of the product</FormLabel>
             <FormInput

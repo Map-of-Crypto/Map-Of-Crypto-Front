@@ -85,7 +85,7 @@ const Main = () => {
             <Route path={"/products" || "/"} element={<Products />} />
             <Route path="/purchases" element={<Purchases />} />
             <Route path="/chat" element={<ChatRoom address={address} />} />
-            <Route path="/sell" element={<HelpForm />} />
+            <Route path="/sell" element={<HelpForm address={address} />} />
           </Routes>
         </Content>
       </Layout>
