@@ -1,0 +1,19 @@
+.label {
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  width: 30%;
+  min-width: 50px;   
+}
+
+.label_inline {
+  font-weight: 600;
+  font-size: 12px;
+  margin-right: 16px;
+}
+
+.spaceBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

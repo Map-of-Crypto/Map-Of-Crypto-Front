@@ -79,7 +79,6 @@ const App = () => {
     setChainId(web3Provider.chainId);
 
     const provider = new providers.Web3Provider(web3Provider);
-    console.log(provider.getSigner());
 
     const contract = new Contract(contractAddress, mocContractInterface, provider.getSigner());
     const aggregateContract = new Contract(aggregatorContractAddress, aggregatorV3Interface, provider.getSigner());

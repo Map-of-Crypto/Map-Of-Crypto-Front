@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Web3Storage } from "web3.storage";
-import { ethers } from "ethers";
 import Alert from "react-bootstrap/Alert";
-import Toggle from "react-toggle";
-import { Button } from "semantic-ui-react";
 import { uid } from "uid";
 import {
   FormWrap,
