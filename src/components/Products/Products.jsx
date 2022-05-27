@@ -9,22 +9,19 @@ const ProductCard = ({ product, merchant }) => {
 
   const getMaticPrice = useCallback(async () => {
     const { answer } = await aggregatorContract?.latestRoundData();
-    setMaticPrice(answer.toNumber() / 10 ** 8);
+    setMaticPrice((answer.toNumber() / (10**8)));
   }, [aggregatorContract]);
 
   useEffect(() => {
-    getMaticPrice();
+    getMaticPrice()
   }, []);
+  
   const initiateBuy = async () => {
-    const key = "updatable";
-    await message.loading({ content: "Waiting for acceptance...", key });
+    const key = 'initiateBuy';
+    await message.loading({ content: 'Waiting for acceptance...', key });
     try {
-      const priceToSend = utils.parseUnits(`${product.price * maticPrice}`);
-      const res = await dappContract?.makePurchaseRequest(
-        merchant.id,
-        product.id,
-        { value: priceToSend }
-      );
+      const priceToSend = utils.parseUnits(`${(product.price * maticPrice) / 1000}`);
+      const res = await dappContract?.makePurchaseRequest(merchant.id, product.id, { value: priceToSend });
       await message.success({
         content: (
           <span>
