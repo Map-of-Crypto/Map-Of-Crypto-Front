@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Web3Storage } from "web3.storage";
-import { Framework as SuperfluidFramework } from "@superfluid-finance/sdk-core";
 import { ethers } from "ethers";
-import "react-toggle/style.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "react-bootstrap/Alert";
-
+import Toggle from "react-toggle";
+import { Button } from "semantic-ui-react";
+import { uid } from "uid";
 import {
-  Container,
   FormWrap,
   FormContent,
   Form,
@@ -18,10 +16,9 @@ import {
   FormSelect,
   FormArea,
 } from "./HelpFormElements";
-
-import Toggle from "react-toggle";
 import ActivityIndicator from "../ActivityIndicator";
-import { Button } from "semantic-ui-react";
+import "react-toggle/style.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const options = [
   { value: "study", label: "Study" },
@@ -63,18 +60,15 @@ const customStyles = {
   }),
 };
 
-const HelpForm = ({ dappContract, address, provider }) => {
+const HelpForm = ({ dappContract = "", address = "", provider }) => {
   const [isInPerson, setIsInPerson] = useState(false);
+  const [file, setFile] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(options[0]);
+  const [price, setPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [show, setShow] = useState(false);
-  const [superfluid, setSuperfluid] = useState(undefined);
-  const [existingFlow, setExistingFlow] = useState(false);
-
-  const daiTokenContract = "0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -82,37 +76,12 @@ const HelpForm = ({ dappContract, address, provider }) => {
     setIsLoading(true);
 
     try {
-      // if (existingFlow) {
-      //   throw new Error("You have the stream open");
-      // }
       const storage = new Web3Storage({
         token: process.env.REACT_APP_WEB3_STORAGE,
       });
 
-      // const signer = provider.getSigner(0);
-      // const createFlowOperation = superfluid.cfaV1.createFlow({
-      //   sender: address,
-      //   receiver: process.env.REACT_APP_CONTRACT_ADDRESS,
-      //   superToken: daiTokenContract,
-      //   flowRate: 1000,
-      // });
-      // const txnResponse = await createFlowOperation.exec(signer);
-      // const txnReceipt = await txnResponse.wait();
-
-      const helpObject = {
-        title: title,
-        description: description,
-        address: address,
-        isOnline: !isInPerson,
-        helpAdCategory: category.value,
-      };
-
-      const blob = new Blob([JSON.stringify(helpObject)], {
-        type: "application/json",
-      });
-      const file = new File([blob], "helpPost.json");
-
-      const cid = await storage.put([file], {
+      const cid = await storage.put(file, {
+        maxRetries: 3,
         onRootCidReady: (localCid) => {
           console.log(`> 🔑 locally calculated Content ID: ${localCid} `);
           console.log("> 📡 sending files to web3.storage ");
@@ -123,67 +92,54 @@ const HelpForm = ({ dappContract, address, provider }) => {
           ),
       });
 
-      const helpRequestLink = `${cid}.ipfs.dweb.link/helpPost.json`;
+      const product = {
+        currency: "USD",
+        description: description,
+        id: uid(16),
+        merchant: address,
+        name: title,
+        price: price,
+        shippingCosts: {
+          DE: "5.00",
+          HR: "12.00",
+          MX: "20.00",
+          PL: "10.00",
+          US: "15.00",
+        },
+        store: "C and A",
+        img: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
+      };
 
-      const addRequest = await dappContract.addHelpAd(helpRequestLink);
-      await addRequest.wait();
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      };
+      fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((data) => console.log(data));
       setIsLoading(false);
-      setIsValid(true);
-      setShow(true);
     } catch (error) {
-      console.warn("Error: ", error);
-
       setIsLoading(false);
-      setIsValid(false);
-      setShow(true);
+      console.warn("Error: ", error);
     }
   };
 
-  // useEffect(() => {
-  //   if (!provider) {
-  //     setSuperfluid(undefined);
-  //     return;
-  //   }
-  //   SuperfluidFramework.create({
-  //     chainId: 80001,
-  //     provider,
-  //   }).then(setSuperfluid);
-  // }, [provider]);
-
-  // useEffect(() => {
-  //   if (!superfluid) return;
-  //   setIsLoading(true);
-  //   const fetchStream = async () => {
-  //     const signer = provider.getSigner(0);
-  //     try {
-  //       const flow = await superfluid.cfaV1.getFlow({
-  //         sender: address,
-  //         receiver: process.env.REACT_APP_CONTRACT_ADDRESS,
-  //         superToken: daiTokenContract,
-  //         providerOrSigner: signer,
-  //       });
-  //       if (Number(flow.flowRate) > 0) {
-  //         console.log(flow);
-  //         setExistingFlow(flow);
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //       setExistingFlow(null);
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   setTimeout(() => {
-  //     fetchStream();
-  //     setIsLoading(false);
-  //   }, 3000);
-  // }, [address, provider, superfluid]);
+  const uploadPhoto = async () => {
+    try {
+    } catch (error) {
+      console.warn("Error: ", error);
+    }
+  };
 
   if (isLoading) {
     return <ActivityIndicator />;
   }
   return (
-    <Container>
+    <>
       <FormWrap>
         <FormContent>
           <div
@@ -230,17 +186,8 @@ const HelpForm = ({ dappContract, address, provider }) => {
           </div>
 
           <Form onSubmit={handleSubmit}>
-            <FormH1>Create a Help Request</FormH1>
-            <FormLabel htmlFor="for">Category</FormLabel>
-            <FormSelect
-              defaultValue={options[0]}
-              value={category}
-              onChange={(category) => setCategory(category)}
-              options={options}
-              required
-              styles={customStyles}
-            />
-            <FormLabel htmlFor="for">Title</FormLabel>
+            <FormH1>List your item</FormH1>
+            <FormLabel htmlFor="for">Name of the product</FormLabel>
             <FormInput
               type="text"
               required
@@ -254,23 +201,25 @@ const HelpForm = ({ dappContract, address, provider }) => {
               onChange={(event) => setDescription(event.target.value)}
               required
             />
-
-            <FormLabel htmlFor="for">
-              Should This Help be Performed in Person?
-            </FormLabel>
-            <div style={{ marginBottom: "10px", marginTop: "10px" }}>
-              <Toggle
-                id="isInPerson"
-                defaultChecked={isInPerson}
-                onChange={() => setIsInPerson((prev) => !prev)}
-              />
-            </div>
+            <FormLabel htmlFor="for">Price</FormLabel>
+            <FormInput
+              type="number"
+              required
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
+            />
+            <FormLabel htmlFor="for">Photo</FormLabel>
+            <FormInput
+              type="file"
+              onChange={(event) => setFile(event.target.files)}
+              required
+            />
             <FormButton type="submit">Submit Request</FormButton>
           </Form>
         </FormContent>
       </FormWrap>
-    </Container>
+    </>
   );
-};;
+};
 
 export default HelpForm;
