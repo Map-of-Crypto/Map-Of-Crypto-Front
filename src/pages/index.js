@@ -27,7 +27,7 @@ const Home = ({ connect }) => {
 
   useEffect(() => {
     if(address) {
-      navigate('/products');
+      navigate("/map");
     }
   }, [navigate, address]);
 
