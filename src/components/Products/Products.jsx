@@ -20,7 +20,7 @@ const ProductCard = ({ product, merchant }) => {
               href={`https://mumbai.polygonscan.com//tx/${res.hash}`}
               rel="noreferrer"
             >
-              Check transaction on etherscan
+              Check transaction on Polygonscan
             </a>
           </span>
         ),
