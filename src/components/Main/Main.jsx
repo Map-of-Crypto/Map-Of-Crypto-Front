@@ -36,7 +36,7 @@ const items = [
     icon: <TagOutlined />,
   }, // remember to pass the key prop
   {
-    label: <Link to="/purchases">Purchases</Link>,
+    label: <Link to="/purchases">Deals</Link>,
     key: "/purchases",
     icon: <WalletOutlined />,
   },

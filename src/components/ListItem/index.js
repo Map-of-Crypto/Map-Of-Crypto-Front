@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Web3Storage } from "web3.storage";
 import Alert from "react-bootstrap/Alert";
 import { uid } from "uid";
@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormInput,
   FormButton,
-  FormSelect,
   FormArea,
 } from "./ListItemElements";
 import { LocationPicker } from "../Map/LocationPicker";
@@ -53,7 +52,6 @@ const customStyles = {
 };
 
 const HelpForm = ({ dappContract = "", address = "", provider }) => {
-  const [isInPerson, setIsInPerson] = useState(false);
   const [file, setFile] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -118,8 +116,12 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
         .then((response) => response.json())
         .then((data) => console.log(data));
       setIsLoading(false);
+      setIsValid(true);
+      setShow(true);
     } catch (error) {
       setIsLoading(false);
+      setIsValid(false);
+      setShow(true);
       console.warn("Error: ", error);
     }
   };
@@ -147,14 +149,8 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
             dismissible
           >
             <Alert.Heading>Success!</Alert.Heading>
-            <p>Your help request has been published successfully!</p>
+            <p>Your item has been listed successfully!</p>
             <p>It might take a few minutes to appear on your dashboard.</p>
-            <hr />
-            <p className="mb-0">
-              You have opened a continuous cashflow that will be sending money
-              as long as your Advert is being shown, you can delete the Advert
-              and cancel the subscription at any point.
-            </p>
           </Alert>
 
           <Alert
@@ -166,10 +162,7 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
             <Alert.Heading>Oh Snap!</Alert.Heading>
             <p>It seems like something went wrong :/</p>
             <hr />
-            <p className="mb-0">
-              If you already have a running Advert you need to cancel it first.
-              You can only have one Advert running at a time.
-            </p>
+            <p className="mb-0">Please try again</p>
           </Alert>
         </div>
 
@@ -208,7 +201,7 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
           <div style={{ height: "100px", marginBottom: "10px" }}>
             <LocationPicker setPosition={setLatlng} />
           </div>
-          <FormButton type="submit">Submit Request</FormButton>
+          <FormButton type="submit">Submit</FormButton>
         </Form>
       </FormContent>
     </FormWrap>
