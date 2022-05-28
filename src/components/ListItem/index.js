@@ -51,7 +51,7 @@ const customStyles = {
   }),
 };
 
-const HelpForm = ({ dappContract = "", address = "", provider }) => {
+const ListForm = ({ dappContract = "", address = "", provider }) => {
   const [file, setFile] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -208,4 +208,4 @@ const HelpForm = ({ dappContract = "", address = "", provider }) => {
   );
 };
 
-export default HelpForm;
+export default ListForm;

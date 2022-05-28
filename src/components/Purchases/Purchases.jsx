@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { constants, utils } from "ethers";
 import humanizeDuration from "humanize-duration";
 import { useContractContext } from "../../hooks/contract";
+import ActivityIndicator from "../ActivityIndicator";
 import styles from "./Purchases.module.css";
 
 function PurchaseCard({
@@ -152,28 +153,50 @@ function PurchaseCard({
 function Purchases() {
   const [purchases, setPurchases] = useState([]);
   const [withdrawBalance, setWithdrawBalance] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { address, dappContract } = useContractContext();
 
   const getPurchases = useCallback(async () => {
-    const res = await dappContract?.getPurchaseList()
-    const results = res.filter(({ merchantAddress }) => merchantAddress !== constants.AddressZero).map(p => {
-      const [purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber] = p;
-      return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber }
-    })
+    setIsLoading(true);
+    const res = await dappContract?.getPurchaseList();
+    const results = res
+      .filter(
+        ({ merchantAddress }) => merchantAddress !== constants.AddressZero
+      )
+      .map((p) => {
+        const [
+          purchaseId,
+          merchantAddress,
+          buyerAddress,
+          accepted,
+          deadline,
+          ethPrice,
+          ethFunded,
+          trackingNumber,
+        ] = p;
+        return {
+          purchaseId,
+          merchantAddress,
+          buyerAddress,
+          accepted,
+          deadline,
+          ethPrice,
+          ethFunded,
+          trackingNumber,
+        };
+      });
     setPurchases(results);
+    setIsLoading(false);
   }, [dappContract]);
 
   const withdrawBalanceFromContract = useCallback(async () => {
-    const key = 'withdraw';
-    await message.loading({ content: 'Withdraw in progress...', key });
+    const key = "withdraw";
+    await message.loading({ content: "Withdraw in progress...", key });
     try {
       await dappContract?.withdraw(address);
       await message.success({
-        content: (
-          <span>
-            {`Success! Soon tokens will be on your wallet`}
-          </span>
-        ),
+        content: <span>{`Success! Soon tokens will be on your wallet`}</span>,
         duration: 5,
         key,
       });
@@ -184,39 +207,53 @@ function Purchases() {
     }
   }, [address, dappContract]);
 
-  
-
   useEffect(() => {
     getPurchases();
     getWithdrawBalance();
   }, [address, dappContract]);
 
   const generateCards = useCallback(() => {
-    return purchases.map(purchase => <Col key={`purchaseNo-${purchase.purchaseId}`} span={{ xs: 24 }}>
-      <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} />
-    </Col>)
-  }, [purchases, getPurchases])
+    return purchases.map((purchase) => (
+      <Col key={`purchaseNo-${purchase.purchaseId}`} span={{ xs: 24 }}>
+        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} />
+      </Col>
+    ));
+  }, [purchases, getPurchases]);
 
   const getWithdrawBalance = useCallback(async () => {
     const balance = await dappContract?.balances(address);
     setWithdrawBalance(utils.formatEther(balance.toNumber()));
   }, [dappContract]);
 
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <>
       <Card>
         <div className={styles.flex_row}>
-          <span><span className={styles.label_medium}>Available to witdraw: </span>{withdrawBalance}</span>
-          {withdrawBalance > 0 && <Button style={{marginLeft: '16px'}} size="small" type="primary" onClick={withdrawBalanceFromContract}>Withdraw</Button>}
+          <span>
+            <span className={styles.label_medium}>Available to witdraw: </span>
+            {withdrawBalance}
+          </span>
+          {withdrawBalance > 0 && (
+            <Button
+              style={{ marginLeft: "16px" }}
+              size="small"
+              type="primary"
+              onClick={withdrawBalanceFromContract}
+            >
+              Withdraw
+            </Button>
+          )}
         </div>
       </Card>
       <div style={{ padding: "24px, 24px" }}>
-        <Row gutter={{ xs: 8, sm: 16 }}>
-          {generateCards()}
-        </Row>
+        <Row gutter={{ xs: 8, sm: 16 }}>{generateCards()}</Row>
       </div>
     </>
-  )
+  );
 }
 
 export default Purchases

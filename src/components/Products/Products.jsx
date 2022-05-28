@@ -2,6 +2,7 @@ import { Button, Card, Col, message, Row } from 'antd';
 import { utils } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useContractContext } from '../../hooks/contract';
+import ActivityIndicator from "../ActivityIndicator";
 
 const ProductCard = ({ product, merchant }) => {
   const [maticPrice, setMaticPrice] = useState(null);
@@ -9,19 +10,25 @@ const ProductCard = ({ product, merchant }) => {
 
   const getMaticPrice = useCallback(async () => {
     const { answer } = await aggregatorContract?.latestRoundData();
-    setMaticPrice((answer.toNumber() / (10**8)));
+    setMaticPrice(answer.toNumber() / 10 ** 8);
   }, [aggregatorContract]);
 
   useEffect(() => {
-    getMaticPrice()
+    getMaticPrice();
   }, []);
-  
+
   const initiateBuy = async () => {
-    const key = 'initiateBuy';
-    await message.loading({ content: 'Waiting for acceptance...', key });
+    const key = "initiateBuy";
+    await message.loading({ content: "Waiting for acceptance...", key });
     try {
-      const priceToSend = utils.parseUnits(`${(product.price * maticPrice) / 1000}`);
-      const res = await dappContract?.makePurchaseRequest(merchant.id, product.id, { value: priceToSend });
+      const priceToSend = utils.parseUnits(
+        `${(product.price * maticPrice) / 1000}`
+      );
+      const res = await dappContract?.makePurchaseRequest(
+        merchant.id,
+        product.id,
+        { value: priceToSend }
+      );
       await message.success({
         content: (
           <span>
@@ -72,15 +79,19 @@ const ProductCard = ({ product, merchant }) => {
 const Products = () => {
   const [availableProducts, setAvailableProducts] = useState([]);
   const [availableMerchants, setAvailableMerchants] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getProducts = useCallback(async () => {
+    setIsLoading(true);
     try {
       const p = await fetch(
         "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
       );
       const { products } = await p.json();
       setAvailableProducts(products);
+      setIsLoading(false);
     } catch (e) {
+      setIsLoading(false);
       console.error(e);
     }
   }, []);
@@ -115,6 +126,10 @@ const Products = () => {
       </Col>
     ));
   }, [availableProducts, availableMerchants]);
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
   return <Row gutter={[16, 16]}>{renderProducts()}</Row>;
 };

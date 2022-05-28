@@ -17,7 +17,7 @@ import React, { useEffect } from "react";
 import Products from "../Products/Products";
 import Purchases from "../Purchases/Purchases";
 import { ChatRoom } from "../../pages/chatRoom";
-import HelpForm from "../ListItem";
+import ListForm from "../ListItem";
 import { MapApp } from "../Map/Map";
 import { useProviderContext } from "../../App";
 import { useContractContext } from "../../hooks/contract";
@@ -100,7 +100,7 @@ const Main = () => {
             <Route path={"/products"} element={<Products />} />
             <Route path="/purchases" element={<Purchases />} />
             <Route path="/chat" element={<ChatRoom address={address} />} />
-            <Route path="/sell" element={<HelpForm address={address} />} />
+            <Route path="/sell" element={<ListForm address={address} />} />
           </Routes>
         </Content>
       </Layout>
