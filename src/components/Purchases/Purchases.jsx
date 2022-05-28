@@ -150,9 +150,10 @@ function PurchaseCard({
 }
 
 function Purchases() {
-  const [purchases, setPurchases] = useState([])
+  const [purchases, setPurchases] = useState([]);
+  const [withdrawBalance, setWithdrawBalance] = useState(0);
+  const { address, dappContract } = useContractContext();
 
-  const { dappContract } = useContractContext();
   const getPurchases = useCallback(async () => {
     const res = await dappContract?.getPurchaseList()
     const results = res.filter(({ merchantAddress }) => merchantAddress !== constants.AddressZero).map(p => {
@@ -162,22 +163,59 @@ function Purchases() {
     setPurchases(results);
   }, [dappContract]);
 
+  const withdrawBalanceFromContract = useCallback(async () => {
+    const key = 'withdraw';
+    await message.loading({ content: 'Withdraw in progress...', key });
+    try {
+      await dappContract?.withdraw(address);
+      await message.success({
+        content: (
+          <span>
+            {`Success! Soon tokens will be on your wallet`}
+          </span>
+        ),
+        duration: 5,
+        key,
+      });
+      setWithdrawBalance(0);
+    } catch (err) {
+      console.error(err);
+      await message.error({ content: err.message, duration: 3, key });
+    }
+  }, [address, dappContract]);
+
+  
+
   useEffect(() => {
-    getPurchases()
-  }, [dappContract])
+    getPurchases();
+    getWithdrawBalance();
+  }, [address, dappContract]);
 
   const generateCards = useCallback(() => {
     return purchases.map(purchase => <Col key={`purchaseNo-${purchase.purchaseId}`} span={{ xs: 24 }}>
-        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases}/>
-      </Col>)
+      <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} />
+    </Col>)
   }, [purchases, getPurchases])
-  
+
+  const getWithdrawBalance = useCallback(async () => {
+    const balance = await dappContract?.balances(address);
+    setWithdrawBalance(utils.formatEther(balance.toNumber()));
+  }, [dappContract]);
+
   return (
-    <div style={{ padding: "24px, 24px" }}>
-      <Row gutter={{ xs: 8, sm: 16 }}>
-      {generateCards()}
-      </Row>
-    </div>
+    <>
+      <Card>
+        <div className={styles.flex_row}>
+          <span><span className={styles.label_medium}>Available to witdraw: </span>{withdrawBalance}</span>
+          {withdrawBalance > 0 && <Button style={{marginLeft: '16px'}} size="small" type="primary" onClick={withdrawBalanceFromContract}>Withdraw</Button>}
+        </div>
+      </Card>
+      <div style={{ padding: "24px, 24px" }}>
+        <Row gutter={{ xs: 8, sm: 16 }}>
+          {generateCards()}
+        </Row>
+      </div>
+    </>
   )
 }
 
