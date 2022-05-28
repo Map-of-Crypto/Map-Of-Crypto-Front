@@ -14,7 +14,7 @@ import Home from "./pages";
 
 import "./App.css";
 
-export const contractAddress = "0xF39cA6DaB68984bf3caF256aa3fB9fDF4EF591a7";
+export const contractAddress = "0x112c52d7dC38CE4708679ABFdc4699965CA4a377";
 export const aggregatorContractAddress = "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada"
 
 const mocContractInterface = new utils.Interface(MapOfCryptoAbi);

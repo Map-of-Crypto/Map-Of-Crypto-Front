@@ -21,14 +21,8 @@ const ProductCard = ({ product, merchant }) => {
     const key = "initiateBuy";
     await message.loading({ content: "Waiting for acceptance...", key });
     try {
-      const priceToSend = utils.parseUnits(
-        `${(product.price * maticPrice) / 1000}`
-      );
-      const res = await dappContract?.makePurchaseRequest(
-        merchant.id,
-        product.id,
-        { value: priceToSend }
-      );
+      const priceToSend = utils.parseUnits(`${(product.price * maticPrice) / 1000}`);
+      const res = await dappContract?.makePurchaseRequest(product.id, { value: priceToSend });
       await message.success({
         content: (
           <span>

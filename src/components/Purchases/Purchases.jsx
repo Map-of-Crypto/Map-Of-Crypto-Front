@@ -18,8 +18,10 @@ function PurchaseCard({
     ethPrice,
     ethFunded,
     trackingNumber,
+    productId
   },
   onStateUpdate,
+  products
 }) {
   const { address, dappContract } = useContractContext();
   const cardStyle = {
@@ -45,6 +47,8 @@ function PurchaseCard({
     }
   });
 
+  const getProductName = () =>  products.find((prod) => prod.id === productId.toString()).name || '';
+  
   const acceptPurchase = useCallback(async () => {
     const key = "acceptPurchase";
     await message.loading({ content: "Waiting for acceptance...", key });
@@ -79,31 +83,32 @@ function PurchaseCard({
       );
     }
 
-    if (merchantAddress.toLowerCase() === address.toLowerCase() && accepted) {
-      actions.push(
-        <Form size="small" onFinish={onTrackinNumberSend}>
-          <Form.Item name="trackingNumber">
-            <span>
-              <Input
-                placeholder="tracking number"
-                style={{
-                  width: 160,
-                  marginRight: 12,
-                }}
-              ></Input>
-              <Button type="primary" htmlType="submit">
-                Add Tracking Number
-              </Button>
-            </span>
-          </Form.Item>
-        </Form>
-      );
+    if (merchantAddress.toLowerCase() === address.toLowerCase() && accepted && !trackingNumber) {
+      actions.push(<Form size="small" onFinish={onTrackinNumberSend}>
+        <Form.Item name="trackingNumber">
+          <span>
+            <Input
+              placeholder="tracking number"
+              style={{
+                width: 160,
+                marginRight: 12
+              }}></Input>
+            <Button type="primary" htmlType="submit">
+              Add Tracking Number
+            </Button>
+          </span>
+        </Form.Item>
+      </Form>)
     }
     return actions;
   }, [address, merchantAddress]);
 
   return (
-    <Card style={cardStyle} hoverable actions={getActions}>
+    <Card style={cardStyle} 
+      hoverable
+      actions={getActions}
+      title={getProductName()}
+    >
       <div className={styles.spaceBetween}>
         <div>
           <span className={styles.label_inline}>Purchase ID:</span>
@@ -154,38 +159,17 @@ function Purchases() {
   const [purchases, setPurchases] = useState([]);
   const [withdrawBalance, setWithdrawBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [availableProducts, setAvailableProducts] = useState([]);
 
   const { address, dappContract } = useContractContext();
 
   const getPurchases = useCallback(async () => {
     setIsLoading(true);
-    const res = await dappContract?.getPurchaseList();
-    const results = res
-      .filter(
-        ({ merchantAddress }) => merchantAddress !== constants.AddressZero
-      )
-      .map((p) => {
-        const [
-          purchaseId,
-          merchantAddress,
-          buyerAddress,
-          accepted,
-          deadline,
-          ethPrice,
-          ethFunded,
-          trackingNumber,
-        ] = p;
-        return {
-          purchaseId,
-          merchantAddress,
-          buyerAddress,
-          accepted,
-          deadline,
-          ethPrice,
-          ethFunded,
-          trackingNumber,
-        };
-      });
+    const res = await dappContract?.getPurchaseList()
+    const results = res.filter(({ merchantAddress }) => merchantAddress !== constants.AddressZero).map(p => {
+      const [purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId] = p
+      return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId }
+    });
     setPurchases(results);
     setIsLoading(false);
   }, [dappContract]);
@@ -210,12 +194,28 @@ function Purchases() {
   useEffect(() => {
     getPurchases();
     getWithdrawBalance();
+    getProducts();
   }, [address, dappContract]);
+
+  const getProducts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const p = await fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
+      );
+      const { products } = await p.json();
+      setAvailableProducts(products);
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      console.error(e);
+    }
+  }, []);
 
   const generateCards = useCallback(() => {
     return purchases.map((purchase) => (
       <Col key={`purchaseNo-${purchase.purchaseId}`} span={{ xs: 24 }}>
-        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} />
+        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} products={availableProducts} />
       </Col>
     ));
   }, [purchases, getPurchases]);
