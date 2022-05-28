@@ -47,7 +47,7 @@ function PurchaseCard({
     }
   });
 
-  const getProductName = () =>  products.find((prod) => prod.id === productId.toString()).name || '';
+  const getProductName = useCallback(() =>  products.find((prod) => prod.id === productId.toString())?.name || '', [ products ]);
   
   const acceptPurchase = useCallback(async () => {
     const key = "acceptPurchase";
