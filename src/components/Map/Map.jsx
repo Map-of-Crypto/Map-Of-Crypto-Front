@@ -96,16 +96,56 @@ export const MapApp = () => {
 
   const getProducts = useCallback(async () => {
     try {
-      const productsList = await fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
-      );
-      const { products } = await productsList.json();
-      const listOfMarkers = products.map((product) => ({
-        lat: product.lattitude,
-        lng: product.longitude,
-      }));
 
-      setProductsList([...products]);
+      // checking all the users / merchants and their products
+
+      const productsList = await fetch(
+        "https://fakestoreapi.com/products"
+      );
+
+
+      const merchantsList = await fetch(
+        "https://fakestoreapi.com/users"
+      );
+
+      // getting the relationship between products and merchants
+
+      const merchantsByProduct = await fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchantByProduct"
+      );
+
+      const merchants = await merchantsList.json();
+      const products = await productsList.json();
+      const { merchantByProduct } = await merchantsByProduct.json();
+
+      const productMetadataList = [];
+
+      for (let i = 0; i < products.length; i++) {
+
+        let productId = products[i]["id"];
+
+        let merchantId = merchantByProduct.find(element => element.productId === productId) ? merchantByProduct.find(element => element.productId === productId)["merchantId"] : "";
+
+        console.log("merchantId", merchantId);
+
+        let productMetadata = {
+          productId: productId,
+          productAddress: merchantByProduct.find(element => element.productId === productId) ? merchantByProduct.find(element => element.productId === productId)["address"] : "",
+          lattitude: merchants.find(element => element.id === merchantId) ? parseFloat(merchants.find(element => element.id === merchantId)["address"]["geolocation"]["lat"]) : "",
+          longitude: merchants.find(element => element.id === merchantId) ? parseFloat(merchants.find(element => element.id === merchantId)["address"]["geolocation"]["long"]) : "",
+          name: products[i]["category"],
+          description: products[i]["title"],
+          price: products[i]["price"]
+        }
+        if (productMetadata["productAddress"]) {
+          productMetadataList.push(productMetadata);
+        }
+
+      }
+
+      console.log("productMetadataList#", productMetadataList)
+
+      setProductsList([...productMetadataList]);
     } catch (e) {
       console.error(e);
     }
@@ -131,6 +171,8 @@ export const MapApp = () => {
             <Marker
               key={i}
               position={{
+
+
                 lat: product.lattitude,
                 lng: product.longitude,
               }}

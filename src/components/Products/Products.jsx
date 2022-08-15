@@ -52,7 +52,7 @@ const ProductCard = ({ product, merchant }) => {
       cover={
         <img
           alt={product.name}
-          src={product.img ? product.img : "https://picsum.photos/300/300"}
+          src={product.image ? product.image : "https://picsum.photos/300/300"}
           style={{ height: 200, width: 190 }}
         />
       }
@@ -61,11 +61,11 @@ const ProductCard = ({ product, merchant }) => {
       actions={[
         <div
           style={{ height: 40, paddingLeft: 10 }}
-        >{`Price: ${product.price}${product.currency}`}</div>,
+        >{`Price: ${product.price}USD`}</div>,
         <Button onClick={initiateBuy}>Buy</Button>,
       ]}
     >
-      <div style={{ height: 40 }}>{product.description}</div>
+      <div style={{ height: 40 }}>{ }</div>
     </Card>
   );
 };
@@ -79,9 +79,9 @@ const Products = () => {
     setIsLoading(true);
     try {
       const p = await fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
+        "https://fakestoreapi.com/products"
       );
-      const { products } = await p.json();
+      const products = await p.json();
       setAvailableProducts(products);
       setIsLoading(false);
     } catch (e) {
@@ -93,9 +93,9 @@ const Products = () => {
   const getMerchants = useCallback(async () => {
     try {
       const m = await fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchants"
+        "https://fakestoreapi.com/users"
       );
-      const { merchants } = await m.json();
+      const merchants = await m.json();
 
       setAvailableMerchants(merchants);
     } catch (e) {

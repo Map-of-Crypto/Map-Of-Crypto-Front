@@ -84,25 +84,37 @@ const ListForm = ({ dappContract = "", address = "", provider }) => {
           ),
       });
 
+      // const product = {
+      //   currency: "USD",
+      //   description: description,
+      //   id: uid(16),
+      //   merchant: address,
+      //   name: title,
+      //   price: price,
+      //   shippingCosts: {
+      //     DE: "5.00",
+      //     HR: "12.00",
+      //     MX: "20.00",
+      //     PL: "10.00",
+      //     US: "15.00",
+      //   },
+      //   store: "C and A",
+      //   img: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
+      //   lattitude: latlng ? latlng.lat : 0,
+      //   longitude: latlng ? latlng.lng : 0,
+      // };
+
+
+      // Changing post for fakestoreapi
+
       const product = {
-        currency: "USD",
-        description: description,
-        id: uid(16),
-        merchant: address,
-        name: title,
+        title: "test product",
         price: price,
-        shippingCosts: {
-          DE: "5.00",
-          HR: "12.00",
-          MX: "20.00",
-          PL: "10.00",
-          US: "15.00",
-        },
-        store: "C and A",
-        img: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
-        lattitude: latlng ? latlng.lat : 0,
-        longitude: latlng ? latlng.lng : 0,
-      };
+        description: description,
+        image: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
+        category: "test category",
+      }
+
 
       const requestOptions = {
         method: "POST",
@@ -110,7 +122,7 @@ const ListForm = ({ dappContract = "", address = "", provider }) => {
         body: JSON.stringify(product),
       };
       fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products",
+        "https://fakestoreapi.com/products",
         requestOptions
       )
         .then((response) => response.json())
