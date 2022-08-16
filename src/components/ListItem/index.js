@@ -108,7 +108,7 @@ const ListForm = ({ dappContract = "", address = "", provider }) => {
       // Changing post for fakestoreapi
 
       const product = {
-        title: "test product",
+        title: description,
         price: price,
         description: description,
         image: `https://${cid}.ipfs.dweb.link/${file[0].name}`,
@@ -116,20 +116,123 @@ const ListForm = ({ dappContract = "", address = "", provider }) => {
       }
 
 
-      const requestOptions = {
+      const requestOptionsProduct = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
       };
-      fetch(
-        "https://fakestoreapi.com/products",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => console.log(data));
+
+      // fetch(
+      //   "https://fakestoreapi.com/products",
+      //   requestOptionsProduct
+      // )
+      //   .then((response) => response.json())
+      //   .then((data) => console.log(data));
+
+      const responseAddProduct = await fetch("https://fakestoreapi.com/products", requestOptionsProduct);
+      const dataProduct = await responseAddProduct.json();
+
+
+      const newProductId = dataProduct["id"];
+
+
+      //Check if merchant address already exists in relationship table
+
+      const merchantsByProduct = await fetch(
+        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchantByProduct"
+      );
+
+      const { merchantByProduct } = await merchantsByProduct.json();
+
+
+      if (merchantByProduct.find(element => element.address.toLowerCase() === String(address).toLowerCase())) {
+        // Address already exists
+        // We check the merchantId of this address and then we insert a new row into merchantByProduct
+        const merchantId = merchantByProduct.find(element => element.address.toLowerCase() === String(address).toLowerCase())["merchantId"];
+
+        // inserting here  to merchantByProduct merchantId, address, newProductId
+
+        const newMerchantByProduct = {
+          productId: newProductId,
+          merchantId: merchantId,
+          address: address
+        }
+
+        const requestOptionsMerchantByProduct = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newMerchantByProduct),
+        };
+
+
+        await fetch("https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchantByProduct", requestOptionsMerchantByProduct);
+      }
+      else {
+
+
+        // We need to create a new user 
+
+        const newUser = {
+          email: 'John@gmail.com',
+          username: 'johnd',
+          password: 'm38rmF$',
+          name: {
+            firstname: 'John',
+            lastname: 'Doe'
+          },
+          address: {
+            city: 'kilcoole',
+            street: '7835 new road',
+            number: 3,
+            zipcode: '12926-3874',
+            geolocation: {
+              lat: latlng ? latlng.lat : 0,
+              long: latlng ? latlng.lng : 0,
+            }
+          },
+          phone: '1-570-236-7033'
+        }
+
+        const requestOptionsUser = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newUser),
+        };
+
+        const responseAddUser = await fetch("https://fakestoreapi.com/users", requestOptionsUser);
+        const dataUser = await responseAddUser.json();
+
+
+        // we get the new userId
+        const newUserId = dataUser["_id"];
+
+
+
+        // insert into merchantByProduct merchantId(User Id), address, newProductId
+
+        const newMerchantByProduct = {
+          productId: newProductId,
+          merchantId: newUserId,
+          address: address
+        }
+
+        const requestOptionsMerchantByProduct = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newMerchantByProduct),
+        };
+
+
+        await fetch("https://mapofcrypto-cdppi36oeq-uc.a.run.app/merchantByProduct", requestOptionsMerchantByProduct);
+
+
+      }
+
       setIsLoading(false);
       setIsValid(true);
       setShow(true);
+
+
     } catch (error) {
       setIsLoading(false);
       setIsValid(false);
