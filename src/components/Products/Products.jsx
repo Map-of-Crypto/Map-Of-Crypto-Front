@@ -5,6 +5,9 @@ import { useContractContext } from "../../hooks/contract";
 import useProductContext from "../../hooks/productContext";
 import ActivityIndicator from "../ActivityIndicator";
 
+// this is temporary haardcoded merchant address
+const merchantWalletAddress = "0xED0262718A77e09C3C8F48696791747E878a5551";
+
 const ProductCard = ({ product, merchant }) => {
   const [maticPrice, setMaticPrice] = useState(null);
   const { dappContract, aggregatorContract } = useContractContext();
@@ -81,9 +84,12 @@ const Products = () => {
   const getMerchants = useCallback(async () => {
     try {
       const m = await fetch("https://fakestoreapi.com/users");
-      const merchants = await m.json();
+      const fetchedMerchants = await m.json();
+      const merchants = fetchedMerchants.map((m) => ({
+        ...m,
+        walletAddress: merchantWalletAddress,
+      }));
       console.log(merchants);
-
       setAvailableMerchants(merchants);
     } catch (e) {
       console.error(e);
