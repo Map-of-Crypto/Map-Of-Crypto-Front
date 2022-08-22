@@ -1,7 +1,8 @@
-import { Button, Card, Col, message, Row } from 'antd';
-import { utils } from 'ethers';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useContractContext } from '../../hooks/contract';
+import { Button, Card, Col, message, Row } from "antd";
+import { utils } from "ethers";
+import React, { useCallback, useEffect, useState } from "react";
+import { useContractContext } from "../../hooks/contract";
+import useProductContext from "../../hooks/productContext";
 import ActivityIndicator from "../ActivityIndicator";
 
 const ProductCard = ({ product, merchant }) => {
@@ -15,14 +16,18 @@ const ProductCard = ({ product, merchant }) => {
 
   useEffect(() => {
     getMaticPrice();
-  }, []);
+  }, [getMaticPrice]);
 
   const initiateBuy = async () => {
     const key = "initiateBuy";
     await message.loading({ content: "Waiting for acceptance...", key });
     try {
-      const priceToSend = utils.parseUnits(`${(product.price * maticPrice) / 1000}`);
-      const res = await dappContract?.makePurchaseRequest(product.id, { value: priceToSend });
+      const priceToSend = utils.parseUnits(
+        `${(product.price * maticPrice) / 1000}`
+      );
+      const res = await dappContract?.makePurchaseRequest(product.id, {
+        value: priceToSend,
+      });
       await message.success({
         content: (
           <span>
@@ -48,7 +53,7 @@ const ProductCard = ({ product, merchant }) => {
 
   return (
     <Card
-      style={{ width: 200 }}
+      style={{ minWidth: 200, maxWidth: 400 }}
       cover={
         <img
           alt={product.name}
@@ -65,37 +70,19 @@ const ProductCard = ({ product, merchant }) => {
         <Button onClick={initiateBuy}>Buy</Button>,
       ]}
     >
-      <div style={{ height: 40 }}>{ }</div>
+      <Card.Meta title={product.title} />
     </Card>
   );
 };
 
 const Products = () => {
-  const [availableProducts, setAvailableProducts] = useState([]);
   const [availableMerchants, setAvailableMerchants] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const getProducts = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const p = await fetch(
-        "https://fakestoreapi.com/products"
-      );
-      const products = await p.json();
-      setAvailableProducts(products);
-      setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
-      console.error(e);
-    }
-  }, []);
-
+  const { isLoading, getProducts, products } = useProductContext();
   const getMerchants = useCallback(async () => {
     try {
-      const m = await fetch(
-        "https://fakestoreapi.com/users"
-      );
+      const m = await fetch("https://fakestoreapi.com/users");
       const merchants = await m.json();
+      console.log(merchants);
 
       setAvailableMerchants(merchants);
     } catch (e) {
@@ -104,28 +91,34 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    getProducts();
     getMerchants();
-  }, [getProducts, getMerchants]);
+    if (!products.length) {
+      getProducts();
+    }
+  }, [getProducts, getMerchants, products]);
 
   const renderProducts = useCallback(() => {
     const getMerchant = (merchantId) =>
       availableMerchants.find((m) => m.id === merchantId);
-    return availableProducts.map((product, index) => (
-      <Col key={`${product.id}${index}`} span={6}>
+    return products.map((product, index) => (
+      <Col key={`${product.id}${index}`} xs={24} sm={12} md={8} xl={6} span={6}>
         <ProductCard
           product={product}
           merchant={getMerchant(product.merchant)}
         />
       </Col>
     ));
-  }, [availableProducts, availableMerchants]);
+  }, [products, availableMerchants]);
 
   if (isLoading) {
     return <ActivityIndicator />;
   }
 
-  return <Row gutter={[16, 16]}>{renderProducts()}</Row>;
+  return (
+    <Row wrap gutter={[16, 16]}>
+      {renderProducts()}
+    </Row>
+  );
 };
 
 export default Products;
