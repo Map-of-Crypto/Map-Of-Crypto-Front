@@ -18,10 +18,15 @@ const ProductProvider = ({ children }) => {
   // const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getProducts = useCallback(async () => {
+  const getProducts = useCallback(async (category) => {
     setIsLoading(true);
+    let productsUrl = `${apiURL}/products`;
+
+    if(category) {
+      productsUrl = `${apiURL}/products/category/${category}`;
+    }
     try {
-      const p = await fetch(`${apiURL}/products`);
+      const p = await fetch(productsUrl);
       const fetchedProducts = await p.json();
 
       //because it's PoC we added merchantId syntheticly

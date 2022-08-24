@@ -1,6 +1,7 @@
 import { Button, Card, Col, message, Row } from "antd";
 import { utils } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useContractContext } from "../../hooks/contract";
 import useProductContext from "../../hooks/productContext";
 import ActivityIndicator from "../ActivityIndicator";
@@ -8,7 +9,7 @@ import ActivityIndicator from "../ActivityIndicator";
 // this is temporary haardcoded merchant address
 const merchantWalletAddress = "0xED0262718A77e09C3C8F48696791747E878a5551";
 
-const ProductCard = ({ product, merchant }) => {
+const ProductCard = ({ product }) => {
   const [maticPrice, setMaticPrice] = useState(null);
   const { dappContract, aggregatorContract } = useContractContext();
 
@@ -21,7 +22,8 @@ const ProductCard = ({ product, merchant }) => {
     getMaticPrice();
   }, [getMaticPrice]);
 
-  const initiateBuy = async () => {
+  const initiateBuy = async (event) => {
+    event.stopPropagation();
     const key = "initiateBuy";
     await message.loading({ content: "Waiting for acceptance...", key });
     try {
@@ -56,12 +58,15 @@ const ProductCard = ({ product, merchant }) => {
 
   return (
     <Card
+      onClick={(event) => {
+        console.log({ event, product })
+      }}
       style={{ minWidth: 200, maxWidth: 400 }}
       cover={
         <img
           alt={product.name}
           src={product.image ? product.image : "https://picsum.photos/300/300"}
-          style={{ height: 200, width: 190 }}
+          style={{ maxHeight: 200, maxWidth: 400, objectFit: 'contain' }}
         />
       }
       hoverable
@@ -81,6 +86,7 @@ const ProductCard = ({ product, merchant }) => {
 const Products = () => {
   const [availableMerchants, setAvailableMerchants] = useState([]);
   const { isLoading, getProducts, products } = useProductContext();
+  const params = useParams();
   const getMerchants = useCallback(async () => {
     try {
       const m = await fetch("https://fakestoreapi.com/users");
@@ -89,7 +95,6 @@ const Products = () => {
         ...m,
         walletAddress: merchantWalletAddress,
       }));
-      console.log(merchants);
       setAvailableMerchants(merchants);
     } catch (e) {
       console.error(e);
@@ -97,11 +102,15 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
+    getProducts(params.category);
+  }, [getProducts, params.category])
+
+  useEffect(() => {
     getMerchants();
     if (!products.length) {
-      getProducts();
+      getProducts(params.category);
     }
-  }, [getProducts, getMerchants, products]);
+  }, [getProducts, getMerchants, products, params.category]);
 
   const renderProducts = useCallback(() => {
     const getMerchant = (merchantId) =>
