@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useState } from "react";
 const ProductContext = createContext({
   getCategories: () => {},
   getProducts: () => {},
+  getSingleProduct: () => {},
   categories: [],
   products: [],
   isLoading: false,
@@ -15,7 +16,6 @@ const apiURL = "https://fakestoreapi.com";
 const ProductProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  // const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const getProducts = useCallback(async (category) => {
@@ -35,7 +35,6 @@ const ProductProvider = ({ children }) => {
         merchantId: Math.ceil(Math.random() * 10),
       }));
 
-      console.log(productsWithMerchants);
       setProducts(productsWithMerchants);
       setIsLoading(false);
     } catch (e) {
@@ -44,6 +43,17 @@ const ProductProvider = ({ children }) => {
     }
   }, []);
 
+  const getSingleProduct = async(productId) => {
+    try {
+      setIsLoading(true);
+      const fetchedProduct = await fetch(`${apiURL}/products/${productId}`)
+      setIsLoading(false);
+      return fetchedProduct;
+    } catch(error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }
   const getCategories = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -58,7 +68,7 @@ const ProductProvider = ({ children }) => {
   }, []);
   return (
     <ProductContext.Provider
-      value={{ getCategories, getProducts, categories, products, isLoading }}
+      value={{ getCategories, getProducts, getSingleProduct, categories, products, isLoading }}
       children={children}
     />
   );

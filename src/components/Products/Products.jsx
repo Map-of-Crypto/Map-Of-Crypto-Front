@@ -1,7 +1,7 @@
 import { Button, Card, Col, message, Row } from "antd";
 import { utils } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContractContext } from "../../hooks/contract";
 import useProductContext from "../../hooks/productContext";
 import ActivityIndicator from "../ActivityIndicator";
@@ -12,7 +12,8 @@ const merchantWalletAddress = "0xED0262718A77e09C3C8F48696791747E878a5551";
 const ProductCard = ({ product }) => {
   const [maticPrice, setMaticPrice] = useState(null);
   const { dappContract, aggregatorContract } = useContractContext();
-
+  const navigate = useNavigate();
+  const params = useParams();
   const getMaticPrice = useCallback(async () => {
     const { answer } = await aggregatorContract?.latestRoundData();
     setMaticPrice(answer.toNumber() / 10 ** 8);
@@ -59,7 +60,7 @@ const ProductCard = ({ product }) => {
   return (
     <Card
       onClick={(event) => {
-        console.log({ event, product })
+        navigate(`/products/product/${product.id}`);
       }}
       style={{ minWidth: 200, maxWidth: 400 }}
       cover={

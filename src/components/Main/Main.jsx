@@ -21,6 +21,7 @@ import ListForm from "../ListItem";
 import { MapApp } from "../Map/Map";
 import { useContractContext } from "../../hooks/contract";
 import useProductContext from "../../hooks/productContext";
+import ProductView from "../ProductView/ProductView";
 
 const { Sider, Content } = Layout;
 
@@ -142,7 +143,7 @@ const Main = () => {
             <Route path={"/products/:category"} element={<Products />} />
             <Route
               path={"/products/product/:productId"}
-              element={<div>This is a product place</div>}
+              element={<ProductView />}
             />
             <Route path="/purchases" element={<Purchases />} />
             <Route path="/chat" element={<ChatRoom address={address} />} />
