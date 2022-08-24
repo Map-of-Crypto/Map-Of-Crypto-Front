@@ -222,7 +222,7 @@ function Purchases() {
 
   const getWithdrawBalance = useCallback(async () => {
     const balance = await dappContract?.balances(address);
-    setWithdrawBalance(utils.formatEther(balance.toNumber()));
+    setWithdrawBalance(utils.formatEther(balance.toString()));
   }, [dappContract]);
 
   if (isLoading) {
