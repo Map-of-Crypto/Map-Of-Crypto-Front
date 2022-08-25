@@ -1,61 +1,25 @@
-import { Button, Card, Col, message, Row } from "antd";
-import { utils } from "ethers";
+import { Button, Card, Col, Row } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContractContext } from "../../hooks/contract";
 import useProductContext from "../../hooks/productContext";
+import { useTradeFunctions } from "../../hooks/useTradeFunctions";
 import ActivityIndicator from "../ActivityIndicator";
 
 // this is temporary haardcoded merchant address
 const merchantWalletAddress = "0xED0262718A77e09C3C8F48696791747E878a5551";
 
 const ProductCard = ({ product }) => {
-  const [maticPrice, setMaticPrice] = useState(null);
-  const { dappContract, aggregatorContract } = useContractContext();
+  const { getMaticPrice, initiateBuy } = useTradeFunctions()
   const navigate = useNavigate();
-  const params = useParams();
-  const getMaticPrice = useCallback(async () => {
-    const { answer } = await aggregatorContract?.latestRoundData();
-    setMaticPrice(answer.toNumber() / 10 ** 8);
-  }, [aggregatorContract]);
 
   useEffect(() => {
     getMaticPrice();
   }, [getMaticPrice]);
 
-  const initiateBuy = async (event) => {
+  const handleBuy = (event) => {
     event.stopPropagation();
-    const key = "initiateBuy";
-    await message.loading({ content: "Waiting for acceptance...", key });
-    try {
-      const priceToSend = utils.parseUnits(
-        `${(product.price * maticPrice) / 1000}`
-      );
-      const res = await dappContract?.makePurchaseRequest(product.id, {
-        value: priceToSend,
-      });
-      await message.success({
-        content: (
-          <span>
-            Success:{" "}
-            <a
-              target="_blank"
-              title="Transaction hash"
-              href={`https://mumbai.polygonscan.com//tx/${res.hash}`}
-              rel="noreferrer"
-            >
-              Check transaction on Polygonscan
-            </a>
-          </span>
-        ),
-        duration: 5,
-        key,
-      });
-    } catch (err) {
-      console.error(err);
-      await message.error({ content: message, duration: 3, key });
-    }
-  };
+    initiateBuy(product)
+  }
 
   return (
     <Card
@@ -75,8 +39,8 @@ const ProductCard = ({ product }) => {
       actions={[
         <div
           style={{ height: 40, paddingLeft: 10 }}
-        >{`Price: ${product.price}USD`}</div>,
-        <Button onClick={initiateBuy}>Buy</Button>,
+        >{`Price: ${product.price} USD`}</div>,
+        <Button onClick={handleBuy}>Buy</Button>,
       ]}
     >
       <Card.Meta title={product.title} />
