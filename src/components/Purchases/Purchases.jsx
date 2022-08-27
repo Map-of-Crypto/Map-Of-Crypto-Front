@@ -45,9 +45,9 @@ function PurchaseCard({
       console.error(err);
       await message.error({ content: err.message, duration: 3, key });
     }
-  });
+  }, [dappContract, onStateUpdate, purchaseId]);
 
-  const getProductName = useMemo(() => products.find((prod) => prod.id === productId.toString())?.title || '', [products]);
+  const getProductName = useMemo(() => products.find((prod) => prod.id === productId.toString())?.title || '', [products, productId]);
 
   const acceptPurchase = useCallback(async () => {
     const key = "acceptPurchase";
@@ -66,7 +66,7 @@ function PurchaseCard({
       console.error(err);
       await message.error({ content: err.message, duration: 3, key });
     }
-  }, [dappContract]);
+  }, [dappContract, onStateUpdate, purchaseId]);
 
   const getActions = useMemo(() => {
     const actions = [];
@@ -101,7 +101,7 @@ function PurchaseCard({
       </Form>)
     }
     return actions;
-  }, [address, merchantAddress]);
+  }, [address, merchantAddress, ethFunded, acceptPurchase, accepted, onTrackinNumberSend, trackingNumber]);
 
   return (
     <Card style={{ width: '100%' }}
@@ -199,24 +199,24 @@ function Purchases() {
     }
   }, [address, dappContract]);
 
-  useEffect(() => {
-    getPurchases();
-    getWithdrawBalance();
-    getProducts();
-  }, [address, dappContract]);
-
+  const getWithdrawBalance = useCallback(async () => {
+    const balance = await dappContract?.balances(address);
+    setWithdrawBalance(utils.formatEther(balance.toString()));
+  }, [dappContract, address]);
+  
   const generateCards = useCallback(() => {
     return purchases.map((purchase) => (
       <Col key={`purchaseNo-${purchase.purchaseId}`} xs={24} md={12}>
         <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} products={products} />
       </Col>
     ));
-  }, [purchases, getPurchases]);
-
-  const getWithdrawBalance = useCallback(async () => {
-    const balance = await dappContract?.balances(address);
-    setWithdrawBalance(utils.formatEther(balance.toString()));
-  }, [dappContract]);
+  }, [purchases, getPurchases, products]);
+  
+  useEffect(() => {
+    getPurchases();
+    getWithdrawBalance();
+    getProducts();
+  }, [address, dappContract, getProducts, getWithdrawBalance, getPurchases]);
 
   if (isLoading || isProductsLoading) {
     return <ActivityIndicator />;

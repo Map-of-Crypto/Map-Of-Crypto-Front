@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
-import { Mainnet, Mumbai, DAppProvider, useEthers } from "@usedapp/core";
+import { Mainnet, Mumbai, DAppProvider } from "@usedapp/core";
 
 import { utils, Contract, providers } from "ethers";
 import MapOfCryptoAbi from "./contracts/abi/MapOfCrypto.json";
@@ -13,9 +13,6 @@ import Main from "./components/Main/Main";
 import Home from "./pages";
 
 import "./App.css";
-
-// export const contractAddress = "0x9C59442A89F56d3160e07370695dC895A77d424e";
-// export const aggregatorContractAddress = "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada"
 
 const mocContractInterface = new utils.Interface(MapOfCryptoAbi);
 const aggregatorV3Interface = new utils.Interface(AggregatorV3Interface);
@@ -47,15 +44,15 @@ const providerOptions = {
   },
 }
 
-const { REACT_APP_CONTRACT_ADDRESS } = process.env;
+// const { REACT_APP_CONTRACT_ADDRESS } = process.env;
 
 const App = () => {
   const [dappContract, setDappContract] = useState(null);
   const [aggregatorContract, setAggregatorContract] = useState(null);
-  const [chainId, setChainId] = useState(1);
+  const [, setChainId] = useState(1);
   const [address, setAddress] = useState("");
   const [provider, setProvider] = useState();
-  const { activate } = useEthers();
+  // const { activate } = useEthers();
 
   const web3Modal = new Web3Modal({
     network: "mainnet",
