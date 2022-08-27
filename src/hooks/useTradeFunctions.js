@@ -21,7 +21,7 @@ export const useTradeFunctions = () => {
         try {
             const priceToSend = utils.parseUnits(
                 // Reason why we divide it by 1000 is to save some MATIC since it's just PoC application
-                `${(product.price * maticPrice) / 1000}`
+                `${(product.price / maticPrice) / 1000}`
             );
             const res = await dappContract?.makePurchaseRequest(product.id, {
                 value: priceToSend,
@@ -49,5 +49,5 @@ export const useTradeFunctions = () => {
         }
     }, [maticPrice, dappContract]);
 
-    return { initiateBuy, getMaticPrice }
+    return { initiateBuy, getMaticPrice, maticPrice }
 }

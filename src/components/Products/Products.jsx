@@ -1,15 +1,18 @@
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, Row, Typography } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProductContext from "../../hooks/productContext";
 import { useTradeFunctions } from "../../hooks/useTradeFunctions";
 import ActivityIndicator from "../ActivityIndicator";
 
+
 // this is temporary haardcoded merchant address
 const merchantWalletAddress = "0xED0262718A77e09C3C8F48696791747E878a5551";
 
+const { Text } = Typography;
+
 const ProductCard = ({ product }) => {
-  const { getMaticPrice, initiateBuy } = useTradeFunctions()
+  const { getMaticPrice, initiateBuy, maticPrice } = useTradeFunctions()
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,8 +41,11 @@ const ProductCard = ({ product }) => {
       title={product.name}
       actions={[
         <div
-          style={{ height: 40, paddingLeft: 10 }}
-        >{`Price: ${product.price} USD`}</div>,
+          style={{ height: 40, paddingLeft: 24, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
+        >
+          <Text strong type="secondary">{`${product.price} USD`}</Text>
+          <Text strong type="secondary">{`${Number(product.price / (maticPrice || 1)).toFixed(4)} MATIC`}</Text>
+        </div>,
         <Button onClick={handleBuy}>Buy</Button>,
       ]}
     >

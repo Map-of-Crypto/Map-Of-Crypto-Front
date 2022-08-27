@@ -1,12 +1,16 @@
 import { red, green } from '@ant-design/colors';
 import { CheckSquareFilled, CloseSquareFilled } from "@ant-design/icons";
-import { Row, Col, Card, Button, Form, Input, message } from 'antd';
+import { Row, Col, Card, Button, Form, Input, message, Typography } from 'antd';
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { constants, utils } from "ethers";
 import humanizeDuration from "humanize-duration";
 import { useContractContext } from "../../hooks/contract";
 import ActivityIndicator from "../ActivityIndicator";
 import styles from "./Purchases.module.css";
+import { getParsedEthersError } from "@enzoferey/ethers-error-parser";
+import useProductContext from "../../hooks/productContext";
+
+const { Text } = Typography;
 
 function PurchaseCard({
   purchase: {
@@ -24,10 +28,6 @@ function PurchaseCard({
   products
 }) {
   const { address, dappContract } = useContractContext();
-  const cardStyle = {
-    minWidth: "370px",
-  };
-
   const onTrackinNumberSend = useCallback(async ({ trackingNumber }) => {
     const key = "sendTrackingNumber";
     await message.loading({ content: "Sending tracking number...", key });
@@ -47,8 +47,8 @@ function PurchaseCard({
     }
   });
 
-  const getProductName = useCallback(() =>  products.find((prod) => prod.id === productId.toString())?.name || '', [ products ]);
-  
+  const getProductName = useMemo(() => products.find((prod) => prod.id === productId.toString())?.title || '', [products]);
+
   const acceptPurchase = useCallback(async () => {
     const key = "acceptPurchase";
     await message.loading({ content: "Waiting for acceptance...", key });
@@ -56,7 +56,7 @@ function PurchaseCard({
       await dappContract?.acceptPurchaseRequest(purchaseId);
       await message.success({
         content: (
-          <span>{`Success! Purchase with id: ${purchaseId} is accepted`}</span>
+          <Text>{`Success! Purchase with id: ${purchaseId} is accepted`}</Text>
         ),
         duration: 5,
         key,
@@ -104,18 +104,18 @@ function PurchaseCard({
   }, [address, merchantAddress]);
 
   return (
-    <Card style={cardStyle} 
+    <Card style={{ width: '100%' }}
       hoverable
       actions={getActions}
-      title={getProductName()}
+      title={getProductName}
     >
       <div className={styles.spaceBetween}>
         <div>
-          <span className={styles.label_inline}>Purchase ID:</span>
+          <Text className={styles.label_inline}>Purchase ID:</Text>
           {purchaseId.toString()}
         </div>
         <div>
-          <span className={styles.label_inline}>Accepted:</span>
+          <Text striong className={styles.label_inline}>Accepted:</Text>
           {accepted ? (
             <CheckSquareFilled
               style={{ fontSize: "18px", color: green.primary }}
@@ -128,28 +128,29 @@ function PurchaseCard({
         </div>
       </div>
       <div>
-        <span className={styles.label}>Buyer Address:</span>
+        <Text string className={styles.label}>Buyer Address:</Text>
         {buyerAddress}
       </div>
       <div>
-        <span className={styles.label}>Merchant Address:</span>
+        <Text string className={styles.label}>Merchant Address:</Text>
         {merchantAddress}
       </div>
       <div>
-        <span className={styles.label}>Price (in crypto):</span>
-        {utils.formatEther(ethPrice.toNumber())}
+        <Text string className={styles.label}>Price (in crypto):</Text>
+        {utils.formatEther(ethPrice.toString())}
+        {`${utils.formatEther(ethPrice.toString())} MATIC`}
       </div>
       <div>
-        <span className={styles.label}>Funded (in crypto):</span>
-        {utils.formatEther(ethFunded.toNumber())}
+        <Text string className={styles.label}>Funded (in crypto):</Text>
+        {`${utils.formatEther(ethFunded.toString())} MATIC`}
       </div>
       <div>
-        <span className={styles.label}>TrackingNumber:</span>
+        <Text string className={styles.label}>TrackingNumber:</Text>
         {trackingNumber.toString()}
       </div>
       <div>
-        <span className={styles.label}>Deadline:</span>
-        {humanizeDuration(deadline.toNumber())}
+        <Text string className={styles.label}>Deadline:</Text>
+        {humanizeDuration(deadline.toString())}
       </div>
     </Card>
   );
@@ -158,20 +159,27 @@ function PurchaseCard({
 function Purchases() {
   const [purchases, setPurchases] = useState([]);
   const [withdrawBalance, setWithdrawBalance] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [availableProducts, setAvailableProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   const { address, dappContract } = useContractContext();
+  const { isLoading: isProductsLoading, getProducts, products } = useProductContext();
 
   const getPurchases = useCallback(async () => {
     setIsLoading(true);
-    const res = await dappContract?.getPurchaseList()
-    const results = res.filter(({ merchantAddress }) => merchantAddress !== constants.AddressZero).map(p => {
-      const [purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId] = p
-      return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId }
-    });
-    setPurchases(results);
-    setIsLoading(false);
+    try {
+      const res = await dappContract?.getPurchaseList();
+      const results = res.filter(({ merchantAddress }) => merchantAddress !== constants.AddressZero).map(p => {
+        const [purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId] = p
+        return { purchaseId, merchantAddress, buyerAddress, accepted, deadline, ethPrice, ethFunded, trackingNumber, productId }
+      });
+      setPurchases(results);
+      setIsLoading(false);
+
+    } catch (error) {
+      const parsedEthersError = getParsedEthersError(error);
+      console.log(error)
+      console.log(parsedEthersError)
+    }
   }, [dappContract]);
 
   const withdrawBalanceFromContract = useCallback(async () => {
@@ -197,25 +205,10 @@ function Purchases() {
     getProducts();
   }, [address, dappContract]);
 
-  const getProducts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const p = await fetch(
-        "https://mapofcrypto-cdppi36oeq-uc.a.run.app/products"
-      );
-      const { products } = await p.json();
-      setAvailableProducts(products);
-      setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
-      console.error(e);
-    }
-  }, []);
-
   const generateCards = useCallback(() => {
     return purchases.map((purchase) => (
-      <Col key={`purchaseNo-${purchase.purchaseId}`} span={{ xs: 24 }}>
-        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} products={availableProducts} />
+      <Col key={`purchaseNo-${purchase.purchaseId}`} xs={24} md={12}>
+        <PurchaseCard purchase={purchase} onStateUpdate={getPurchases} products={products} />
       </Col>
     ));
   }, [purchases, getPurchases]);
@@ -225,33 +218,35 @@ function Purchases() {
     setWithdrawBalance(utils.formatEther(balance.toString()));
   }, [dappContract]);
 
-  if (isLoading) {
+  if (isLoading || isProductsLoading) {
     return <ActivityIndicator />;
   }
 
   return (
     <>
-      <Card>
-        <div className={styles.flex_row}>
-          <span>
-            <span className={styles.label_medium}>Available to witdraw: </span>
-            {withdrawBalance}
-          </span>
-          {withdrawBalance > 0 && (
-            <Button
-              style={{ marginLeft: "16px" }}
-              size="small"
-              type="primary"
-              onClick={withdrawBalanceFromContract}
-            >
-              Withdraw
-            </Button>
-          )}
-        </div>
-      </Card>
-      <div style={{ padding: "24px, 24px" }}>
-        <Row gutter={{ xs: 8, sm: 16 }}>{generateCards()}</Row>
-      </div>
+      <Row style={{ marginBottom: 16 }}>
+        <Col xs={24}>
+          <Card>
+            <div className={styles.flex_row}>
+              <Text style={{fontSize: 24}}>
+                <Text strong style={{marginRight: 16}}>Available to witdraw: </Text>
+                {`${withdrawBalance} MATIC`}
+              </Text>
+              {withdrawBalance > 0 && (
+                <Button
+                  style={{ marginLeft: "16px" }}
+                  size="large"
+                  type="primary"
+                  onClick={withdrawBalanceFromContract}
+                >
+                  Withdraw
+                </Button>
+              )}
+            </div>
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={{ xs: 8, sm: 16 }}>{generateCards()}</Row>
     </>
   );
 }

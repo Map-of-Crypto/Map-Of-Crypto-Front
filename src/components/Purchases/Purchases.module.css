@@ -12,12 +12,6 @@
   margin-right: 16px;
 }
 
-.label_medium {
-  font-weight: 600;
-  font-size: 16px;
-  margin-right: 16px;
-}
-
 .spaceBetween {
   display: flex;
   justify-content: space-between;
