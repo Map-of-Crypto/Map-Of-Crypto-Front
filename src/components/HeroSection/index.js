@@ -20,7 +20,7 @@ function HeroSection() {
   };
   return (
     <HeroContainer id="home">
-      <HeroBg>
+      <HeroBg style={{ textAlign: 'center' }}>
         <img src={WorldMap} style={{ filter: "invert(0.4)" }} alt="Logo" />
       </HeroBg>
       <HeroContent>
