@@ -8,14 +8,14 @@ import { utils, Contract, providers } from "ethers";
 import MapOfCryptoAbi from "./contracts/abi/MapOfCrypto.json";
 import AggregatorV3Interface from "./contracts/abi/AggregatorV3Interface.json";
 import { ContractContext } from "./hooks/contract";
-
+import { contractAddress, aggregatorContractAddress } from './constants'
 import Main from "./components/Main/Main";
 import Home from "./pages";
 
 import "./App.css";
 
-export const contractAddress = "0x112c52d7dC38CE4708679ABFdc4699965CA4a377";
-export const aggregatorContractAddress = "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada"
+// export const contractAddress = "0x9C59442A89F56d3160e07370695dC895A77d424e";
+// export const aggregatorContractAddress = "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada"
 
 const mocContractInterface = new utils.Interface(MapOfCryptoAbi);
 const aggregatorV3Interface = new utils.Interface(AggregatorV3Interface);
